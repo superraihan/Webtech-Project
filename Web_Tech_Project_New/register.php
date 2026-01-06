@@ -20,7 +20,6 @@
         $pass = $_POST['password'];
         $cpass = $_POST['confirm_password'];
 
-        // ভ্যালিডেশন চেক
         if (empty($name) || empty($email) || empty($pass)) {
             $error = "All fields are required!";
         } 
@@ -28,8 +27,6 @@
             $error = "Passwords do not match!";
         } 
         else {
-            // ----- এই সেই DEMO লজিক -----
-            // ডাটাবেস নেই, তাই আমরা ধরে নিচ্ছি রেজিস্ট্রেশন হয়ে গেছে
             $success = "Registration Successful! (You can now go to Login page)";
         }
     }

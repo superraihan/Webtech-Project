@@ -20,11 +20,9 @@
         if (empty($email) || empty($password)) {
             $login_error = "Please fill all fields!";
         } else {
-            // লজিক একই আছে, শুধু মেসেজটা ক্লিন করা হলো
             if ($email == "admin@gmail.com" && $password == "1234") {
                 echo "<script>alert('Login Successful!'); window.location.href='home.php';</script>";
             } else {
-                // এখান থেকে (Try: ...) লেখাটা মুছে দিয়েছি
                 $login_error = "Invalid Email or Password!";
             }
         }

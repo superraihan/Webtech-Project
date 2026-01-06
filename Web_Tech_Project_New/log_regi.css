@@ -1,6 +1,3 @@
-/* log_regi.css */
-
-/* পেজের মাঝখানে আনার জন্য */
 .log-regi-section {
     display: flex;
     justify-content: center;
@@ -9,13 +6,12 @@
     padding: 20px;
 }
 
-/* ফর্মের বক্স ডিজাইন */
 .log-regi-container {
     background: #222222;
     padding: 40px;
     border-radius: 20px;
     width: 100%;
-    max-width: 400px; /* বক্স বেশি বড় হবে না */
+    max-width: 400px; 
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     text-align: center;
     border: 1px solid #333;
@@ -27,7 +23,6 @@
     font-size: 32px;
 }
 
-/* ইনপুট ফিল্ড */
 .form-group {
     margin-bottom: 20px;
     text-align: left;
@@ -56,7 +51,6 @@
     border-color: #ff8c00;
 }
 
-/* বাটন */
 .btn-submit {
     width: 100%;
     padding: 12px;
@@ -76,7 +70,6 @@
     color: #fff;
 }
 
-/* এরর মেসেজ */
 .error-msg {
     color: #ff4444;
     font-size: 13px;
@@ -93,7 +86,6 @@
     border: 1px solid #ff4444;
 }
 
-/* নিচের লিঙ্ক */
 .link-text {
     margin-top: 15px;
     font-size: 14px;
@@ -105,39 +97,33 @@
     text-decoration: none;
 }
 
-/* log_regi.css এর শেষে এটা যোগ করো */
-
 .forgot-link {
     display: block;
     text-align: right;
     font-size: 13px;
-    color: #ff8c00; /* এইখানে কালার অরেঞ্জ করে দেওয়া হয়েছে */
+    color: #ff8c00;
     margin-top: 8px;
     text-decoration: none;
     transition: 0.3s;
-    font-weight: 500; /* একটু বোল্ড করলে দেখতে ভালো লাগবে */
+    font-weight: 500;
 }
 
 .forgot-link:hover {
-    color: #ffffff; /* মাউস নিলে সাদা হবে, যাতে বুঝা যায় */
+    color: #ffffff;
     text-decoration: underline;
 }
-/* log_regi.css এর শেষে যোগ করো */
 
-/* পাসওয়ার্ড ফিল্ডের জন্য র‌্যাপার */
 .password-wrapper {
     position: relative;
     width: 100%;
 }
 
-/* পাসওয়ার্ড ইনপুট ফিল্ড */
 .password-wrapper input {
     width: 100%;
-    padding-right: 40px; /* ডানপাশে আইকনের জন্য জায়গা রাখা */
+    padding-right: 40px; 
     box-sizing: border-box;
 }
 
-/* তালা (Lock) আইকন স্টাইল */
 .toggle-password {
     position: absolute;
     right: 15px;
@@ -145,32 +131,27 @@
     transform: translateY(-50%);
     cursor: pointer;
     font-size: 18px;
-    user-select: none; /* যাতে সিলেক্ট না হয় */
+    user-select: none; 
 }
-/* --- Forgot Password Page Styles --- */
 
-/* নির্দেশনা টেক্সট (ধূসর) */
 .info-text {
     color: #bfbfbf;
     font-size: 14px;
     margin-bottom: 20px;
 }
 
-/* ইমেইল ভেরিফাইড টেক্সট (অরেঞ্জ) */
 .verified-text {
     color: #ff8c00;
     font-size: 14px;
     margin-bottom: 20px;
 }
 
-/* সাকসেস ইমোজি */
 .success-icon {
     color: #ffffff;
     margin-bottom: 20px;
     font-size: 50px;
 }
 
-/* সাকসেস মেসেজ বক্স */
 .success-box {
     color: #4caf50;
     margin-bottom: 20px;
@@ -178,9 +159,8 @@
     font-weight: 600;
 }
 
-/* লগিন বাটন লিঙ্ক স্টাইল */
 .btn-link {
     text-decoration: none;
     display: block;
-    padding-top: 12px; /* টেক্সট মাঝখানে আনার জন্য */
+    padding-top: 12px; 
 }
