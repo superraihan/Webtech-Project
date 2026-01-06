@@ -1,4 +1,4 @@
 <div class="nav">
-    <a href="#" class="login">Login</a>
-    <a href="#" class="register">Register</a>
+    <a href="login.php" class="login">Login</a>
+    <a href="register.php" class="register">Register</a>
 </div>
