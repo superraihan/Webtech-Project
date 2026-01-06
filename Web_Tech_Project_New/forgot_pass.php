@@ -17,11 +17,9 @@
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
-        // STEP 1: ইমেইল চেক
         if (isset($_POST['check_email'])) {
             $email = $_POST['email'];
             
-            // ডেমো চেক
             if ($email == "admin@gmail.com") {
                 $step = 2;
             } else {
@@ -29,7 +27,6 @@
             }
         }
 
-        // STEP 2: পাসওয়ার্ড চেঞ্জ
         if (isset($_POST['change_pass'])) {
             $new_pass = $_POST['new_password'];
             $confirm_pass = $_POST['confirm_new_password'];
