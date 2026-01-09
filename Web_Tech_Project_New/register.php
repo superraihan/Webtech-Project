@@ -1,3 +1,5 @@
+<?php include 'db_connect.php'; ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,17 +19,32 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $name = $_POST['name'];
         $email = $_POST['email'];
+        $phone = $_POST['phone'];
+        $address = $_POST['address'];
         $pass = $_POST['password'];
         $cpass = $_POST['confirm_password'];
 
-        if (empty($name) || empty($email) || empty($pass)) {
+        if (empty($name) || empty($email) || empty($phone) || empty($address) || empty($pass)) {
             $error = "All fields are required!";
         } 
         elseif ($pass != $cpass) {
             $error = "Passwords do not match!";
         } 
         else {
-            $success = "Registration Successful! (You can now go to Login page)";
+            $check_email = "SELECT * FROM users WHERE email='$email'";
+            $result = $conn->query($check_email);
+
+            if ($result->num_rows > 0) {
+                $error = "Email already exists! Please Login.";
+            } else {
+                $sql = "INSERT INTO users (name, email, phone, address, password) VALUES ('$name', '$email', '$phone', '$address', '$pass')";
+
+                if ($conn->query($sql) === TRUE) {
+                    $success = "Registration Successful! You can now go to Login page.";
+                } else {
+                    $error = "Error: " . $conn->error;
+                }
+            }
         }
     }
 ?>
@@ -37,7 +54,6 @@
         <h2>Create Account</h2>
         
         <?php if($error){ echo "<div class='php-error'>$error</div>"; } ?>
-        
         <?php if($success){ echo "<div style='color:#4caf50; background:rgba(76, 175, 80, 0.1); padding:10px; border-radius:5px; margin-bottom:15px; border:1px solid #4caf50;'>$success</div>"; } ?>
 
         <p id="js-error" class="error-msg"></p>
@@ -51,6 +67,16 @@
             <div class="form-group">
                 <label>Email Address</label>
                 <input type="email" name="email" id="email" placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" name="phone" id="phone" placeholder="Enter 11 digit number">
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <input type="text" name="address" id="address" placeholder="Enter your full address">
             </div>
 
             <div class="form-group">

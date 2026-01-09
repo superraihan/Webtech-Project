@@ -1,3 +1,8 @@
+<?php 
+session_start();
+include 'db_connect.php'; 
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,10 +25,23 @@
         if (empty($email) || empty($password)) {
             $login_error = "Please fill all fields!";
         } else {
-            if ($email == "admin@gmail.com" && $password == "1234") {
-                echo "<script>alert('Login Successful!'); window.location.href='home.php';</script>";
+            $sql = "SELECT * FROM users WHERE email='$email'";
+            $result = $conn->query($sql);
+
+            if ($result->num_rows == 1) {
+                $row = $result->fetch_assoc();
+                
+                if ($password == $row['password']) {
+                    $_SESSION['user_id'] = $row['id'];
+                    $_SESSION['user_name'] = $row['name'];
+                    $_SESSION['user_email'] = $row['email'];
+
+                    echo "<script>alert('Login Successful! Welcome " . $row['name'] . "'); window.location.href='home.php';</script>";
+                } else {
+                    $login_error = "Incorrect Password!";
+                }
             } else {
-                $login_error = "Invalid Email or Password!";
+                $login_error = "Email not found! Please Register.";
             }
         }
     }

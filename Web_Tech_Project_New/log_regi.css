@@ -164,3 +164,21 @@
     display: block;
     padding-top: 12px; 
 }
+.cancel-link {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.cancel-link a {
+    color: #ff9100;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.cancel-link a:hover {
+    color: #ffbc5e;
+    transform: translateX(-5px);
+}

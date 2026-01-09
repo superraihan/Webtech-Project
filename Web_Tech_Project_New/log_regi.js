@@ -1,13 +1,21 @@
 function validateRegister() {
     let name = document.getElementById("name").value;
     let email = document.getElementById("email").value;
+    let phone = document.getElementById("phone").value;
+    let address = document.getElementById("address").value;
     let pass = document.getElementById("password").value;
     let confirmPass = document.getElementById("confirm_password").value;
     let errorText = document.getElementById("js-error");
 
-    if (name === "" || email === "" || pass === "" || confirmPass === "") {
+    if (name === "" || email === "" || phone === "" || address === "" || pass === "" || confirmPass === "") {
         errorText.style.display = "block";
         errorText.innerText = "⚠️ Please fill in all fields!";
+        return false;
+    }
+
+    if (isNaN(phone) || phone.length < 11) {
+        errorText.style.display = "block";
+        errorText.innerText = "⚠️ Phone number must be at least 11 digits!";
         return false;
     }
 
@@ -63,18 +71,6 @@ function togglePassword(inputId, iconId) {
         inputField.type = "password"; 
         icon.innerText = "🔒";    
     }
-}
-
-function validateForgotEmail() {
-    let email = document.getElementById("forgot_email").value;
-    let errorText = document.getElementById("js-forgot-error");
-
-    if (email === "") {
-        errorText.style.display = "block";
-        errorText.innerText = "⚠️ Please enter your email address!";
-        return false;
-    }
-    return true;
 }
 
 function validateNewPass() {
