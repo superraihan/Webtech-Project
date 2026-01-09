@@ -1,3 +1,8 @@
+<?php 
+session_start();
+include 'db_connect.php'; 
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,10 +25,24 @@
         if (isset($_POST['check_email'])) {
             $email = $_POST['email'];
             
-            if ($email == "admin@gmail.com") {
+            $check_user = "SELECT * FROM users WHERE email='$email'";
+            $result_user = $conn->query($check_user);
+
+            if ($result_user->num_rows > 0) {
+                $_SESSION['reset_email'] = $email;
+                $_SESSION['reset_table'] = 'users'; 
                 $step = 2;
             } else {
-                $error = "Email not found!";
+                $check_admin = "SELECT * FROM admins WHERE email='$email'";
+                $result_admin = $conn->query($check_admin);
+
+                if ($result_admin->num_rows > 0) {
+                    $_SESSION['reset_email'] = $email;
+                    $_SESSION['reset_table'] = 'admins'; 
+                    $step = 2;
+                } else {
+                    $error = "Email not found!";
+                }
             }
         }
 
@@ -31,7 +50,7 @@
             $new_pass = $_POST['new_password'];
             $confirm_pass = $_POST['confirm_new_password'];
 
-            if ($new_pass == "" || $confirm_pass == "") {
+            if (empty($new_pass) || empty($confirm_pass)) {
                 $error = "Please fill all fields!";
                 $step = 2;
             } 
@@ -44,8 +63,26 @@
                 $step = 2;
             } 
             else {
-                $step = 3; 
-                $success = "✅ Password has been reset successfully!";
+                if(isset($_SESSION['reset_email']) && isset($_SESSION['reset_table'])){
+                    
+                    $email_to_update = $_SESSION['reset_email'];
+                    $table_to_update = $_SESSION['reset_table']; 
+                    
+                    $update_sql = "UPDATE $table_to_update SET password='$new_pass' WHERE email='$email_to_update'";
+                    
+                    if ($conn->query($update_sql) === TRUE) {
+                        $step = 3; 
+                        $success = "✅ Password reset successfully for !";
+                        
+                        unset($_SESSION['reset_email']);
+                        unset($_SESSION['reset_table']);
+                    } else {
+                        $error = "Error updating record: " . $conn->error;
+                    }
+                } else {
+                    $error = "Session expired! Please try again.";
+                    $step = 1;
+                }
             }
         }
     }
@@ -56,14 +93,12 @@
         
         <?php if ($step == 1): ?>
             <h2>Find Account</h2>
-            <p class="info-text">
-                Enter your registered email to search for your account.
-            </p>
+            <p class="info-text">Enter your registered email to search.</p>
 
             <?php if($error){ echo "<div class='php-error'>$error</div>"; } ?>
             <p id="js-forgot-error" class="error-msg"></p>
 
-            <form action="" method="POST" onsubmit="return validateForgotEmail()">
+            <form action="" method="POST" onsubmit="return validateForgot()">
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" name="email" id="forgot_email" placeholder="Enter your email">
@@ -76,14 +111,13 @@
         <?php elseif ($step == 2): ?>
             <h2>Reset Password</h2>
             <p class="verified-text">
-                Email Verified! Set a new password.
+                Account found! Please enter your new password below.
             </p>
 
             <?php if($error){ echo "<div class='php-error'>$error</div>"; } ?>
             <p id="js-newpass-error" class="error-msg"></p>
 
             <form action="" method="POST" onsubmit="return validateNewPass()">
-                
                 <div class="form-group">
                     <label>New Password</label>
                     <div class="password-wrapper">
@@ -102,13 +136,13 @@
 
                 <button type="submit" name="change_pass" class="btn-submit">Update Password</button>
             </form>
-
+            <p class="link-text cancel-link">
+                <a href="home.php">← Back to Home</a>
+            </p>
         <?php elseif ($step == 3): ?>
             <h2>Success!</h2>
             <div class="success-icon">🎉</div>
-            <div class="success-box">
-                <?php echo $success; ?>
-            </div>
+            <div class="success-box"><?php echo $success; ?></div>
             <a href="login.php" class="btn-submit btn-link">Go to Login</a>
         <?php endif; ?>
 
