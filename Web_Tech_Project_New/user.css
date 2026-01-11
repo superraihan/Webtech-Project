@@ -1,0 +1,166 @@
+body {
+    background-color: #1a1a1a;
+    color: #fff;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    margin-top: 20px;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #222;
+    padding: 20px;
+    border-right: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h3 {
+    color: #ff8c00;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar button {
+    background: transparent;
+    color: #bbb;
+    border: none;
+    padding: 15px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.sidebar button:hover, .sidebar button.active {
+    background-color: #ff8c00;
+    color: #000;
+    font-weight: 700;
+}
+
+.logout-btn {
+    margin-top: auto;
+    background-color: #d9534f !important;
+    color: white !important;
+    text-align: center !important;
+}
+
+.logout-btn:hover {
+    background-color: #c9302c !important;
+}
+
+.main-content {
+    flex: 1;
+    padding: 30px;
+    background-color: #1a1a1a;
+}
+
+.section-content {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.section-content.active {
+    display: block;
+}
+
+h2 {
+    color: #ff8c00;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #333;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.stat-card h3 {
+    font-size: 40px;
+    margin: 10px 0;
+    color: #ff8c00;
+}
+
+.stat-card p {
+    color: #aaa;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ddd;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    background: #333;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.btn-update {
+    background: #ff8c00;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.btn-update:hover {
+    background: #e67e00;
+}
+
+.success-msg { color: #4caf50; margin-bottom: 15px; }
+.error-msg { color: #ff4444; margin-bottom: 15px; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #222;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+th {
+    background-color: #333;
+    color: #ff8c00;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -72,7 +72,7 @@ include 'db_connect.php';
                     
                     if ($conn->query($update_sql) === TRUE) {
                         $step = 3; 
-                        $success = "✅ Password reset successfully for !";
+                        $success = "✅ Password reset successfully !";
                         
                         unset($_SESSION['reset_email']);
                         unset($_SESSION['reset_table']);
