@@ -1,6 +1,11 @@
 <?php 
 session_start();
 include 'db_connect.php'; 
+
+if (isset($_SESSION['email'])) {
+    header("Location: user.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -10,6 +15,7 @@ include 'db_connect.php';
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="log_regi.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -34,9 +40,26 @@ include 'db_connect.php';
                 if ($password == $row['password']) {
                     $_SESSION['user_id'] = $row['id'];
                     $_SESSION['user_name'] = $row['name'];
-                    $_SESSION['user_email'] = $row['email'];
+                    $_SESSION['email'] = $row['email'];
 
-                    echo "<script>alert('Login Successful! Welcome " . $row['name'] . "'); window.location.href='home.php';</script>";
+                    // ✅ SweetAlert2 কোড আপডেট করা হলো
+                    echo "<script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            Swal.fire({
+                                title: 'Login Successful!',
+                                text: 'Welcome " . $row['name'] . " 👋',
+                                icon: 'success',
+                                background: '#222',
+                                color: '#fff',
+                                confirmButtonColor: '#ff8c00',
+                                confirmButtonText: 'Go to Profile',
+                                allowOutsideClick: true // বাইরে ক্লিক করার অনুমতি দেওয়া হলো
+                            }).then((result) => {
+                                // শর্ত সরিয়ে দেওয়া হয়েছে। এখন বাটনে চাপ দিক বা বাইরে ক্লিক করুক—সব ক্ষেত্রেই রিডাইরেক্ট হবে।
+                                window.location.href = 'user.php';
+                            });
+                        });
+                    </script>";
                 } else {
                     $login_error = "Incorrect Password!";
                 }
