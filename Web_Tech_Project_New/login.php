@@ -2,8 +2,12 @@
 session_start();
 include 'db_connect.php'; 
 
-if (isset($_SESSION['email'])) {
-    header("Location: user.php");
+if (isset($_SESSION['role'])) {
+    if ($_SESSION['role'] == 'admin') {
+        header("Location: admin.php");
+    } else {
+        header("Location: user.php");
+    }
     exit();
 }
 ?>
@@ -13,16 +17,27 @@ if (isset($_SESSION['email'])) {
 <head>
     <title>Login - PetAdopt</title>
     <link rel="stylesheet" href="home.css">
-    <link rel="stylesheet" href="log_regi.css">
+    <link rel="stylesheet" href="log_regi.css?v=3">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
 <?php include 'header.php'; ?>
 
+<div id="custom-popup" class="popup-overlay">
+    <div class="popup-content">
+        <div style="font-size: 50px; margin-bottom: 10px;">🎉</div>
+        <h3>Login Successful!</h3>
+        <p id="popup-msg">Welcome back!</p>
+        <button onclick="redirectUser()" class="popup-btn">Go to Dashboard</button>
+    </div>
+</div>
+
 <?php
     $login_error = "";
+    $user_name = "";
+    $login_success = false;
+    $redirect_url = "";
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = $_POST['email'];
@@ -31,40 +46,37 @@ if (isset($_SESSION['email'])) {
         if (empty($email) || empty($password)) {
             $login_error = "Please fill all fields!";
         } else {
-            $sql = "SELECT * FROM users WHERE email='$email'";
-            $result = $conn->query($sql);
+            $sql_user = "SELECT * FROM users WHERE email='$email' AND password='$password'";
+            $result_user = $conn->query($sql_user);
 
-            if ($result->num_rows == 1) {
-                $row = $result->fetch_assoc();
-                
-                if ($password == $row['password']) {
-                    $_SESSION['user_id'] = $row['id'];
-                    $_SESSION['user_name'] = $row['name'];
-                    $_SESSION['email'] = $row['email'];
+            if ($result_user->num_rows == 1) {
+                $row = $result_user->fetch_assoc();
+                $_SESSION['user_id'] = $row['id'];
+                $_SESSION['user_name'] = $row['name'];
+                $_SESSION['email'] = $row['email'];
+                $_SESSION['role'] = 'user'; 
 
-                    // ✅ SweetAlert2 কোড আপডেট করা হলো
-                    echo "<script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            Swal.fire({
-                                title: 'Login Successful!',
-                                text: 'Welcome " . $row['name'] . " 👋',
-                                icon: 'success',
-                                background: '#222',
-                                color: '#fff',
-                                confirmButtonColor: '#ff8c00',
-                                confirmButtonText: 'Go to Profile',
-                                allowOutsideClick: true // বাইরে ক্লিক করার অনুমতি দেওয়া হলো
-                            }).then((result) => {
-                                // শর্ত সরিয়ে দেওয়া হয়েছে। এখন বাটনে চাপ দিক বা বাইরে ক্লিক করুক—সব ক্ষেত্রেই রিডাইরেক্ট হবে।
-                                window.location.href = 'user.php';
-                            });
-                        });
-                    </script>";
-                } else {
-                    $login_error = "Incorrect Password!";
-                }
+                $user_name = $row['name'];
+                $redirect_url = "user.php";
+                $login_success = true;
+
             } else {
-                $login_error = "Email not found! Please Register.";
+                $sql_admin = "SELECT * FROM admins WHERE email='$email' AND password='$password'";
+                $result_admin = $conn->query($sql_admin);
+
+                if ($result_admin->num_rows == 1) {
+                    $row = $result_admin->fetch_assoc();
+                    $_SESSION['admin_id'] = $row['id'];
+                    $_SESSION['admin_name'] = $row['name'];
+                    $_SESSION['email'] = $row['email'];
+                    $_SESSION['role'] = 'admin';
+
+                    $user_name = $row['name'] . " (Admin)";
+                    $redirect_url = "admin.php";
+                    $login_success = true;
+                } else {
+                    $login_error = "Invalid Email or Password!";
+                }
             }
         }
     }
@@ -101,5 +113,31 @@ if (isset($_SESSION['email'])) {
 
 <?php include 'footer.php'; ?>
 <script src="log_regi.js"></script>
+
+<script>
+    var targetUrl = "<?php echo $redirect_url; ?>";
+
+    function redirectUser() {
+        if(targetUrl) {
+            window.location.href = targetUrl;
+        }
+    }
+
+    <?php if($login_success): ?>
+    document.addEventListener('DOMContentLoaded', function() {
+        var popup = document.getElementById('custom-popup');
+        var msg = document.getElementById('popup-msg');
+        msg.innerText = 'Welcome <?php echo $user_name; ?> 👋';
+        popup.style.display = 'flex';
+
+        popup.addEventListener('click', function(e) {
+            if (e.target === popup) {
+                redirectUser();
+            }
+        });
+    });
+    <?php endif; ?>
+</script>
+
 </body>
 </html>

@@ -82,7 +82,27 @@ nav ul a:hover {
 .nav a:hover {
     background: #ff8c00;
     color: #f0eeee;
-    
+}
+
+.nav .profile-btn {
+    background: transparent;
+    border: 1px solid #ff9100;
+    color: #ff9100;
+}
+
+.nav .profile-btn:hover {
+    background: #ff9100;
+    color: #fff;
+}
+
+.nav .logout-btn {
+    background-color: #d9534f;
+    border: none;
+}
+
+.nav .logout-btn:hover {
+    background-color: #c9302c;
+    color: #fff;
 }
 
 
