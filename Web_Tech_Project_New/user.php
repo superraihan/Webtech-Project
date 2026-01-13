@@ -163,7 +163,6 @@ $user = $result->fetch_assoc();
         </div>
     </div>
 
-    <?php include 'footer.php'; ?>
     <script src="user.js?v=3"></script>
 </body>
 </html>

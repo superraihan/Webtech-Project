@@ -6,8 +6,12 @@ if (session_status() == PHP_SESSION_NONE) {
 
 <div class="nav">
     <?php if (isset($_SESSION['email'])): ?>
-        <a href="user.php" class="login" style="background: transparent; border: 1px solid #ff9100; color: #ff9100;">My Profile</a>
-        <a href="logout.php" class="register" style="background-color: #d9534f; border: none;">Logout</a>
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin'): ?>
+            <a href="admin.php" class="login profile-btn">My Profile</a>
+        <?php else: ?>
+            <a href="user.php" class="login profile-btn">My Profile</a>
+        <?php endif; ?>
+        <a href="logout.php" class="register logout-btn">Logout</a>
     <?php else: ?>
         <a href="login.php" class="login">Login</a>
         <a href="register.php" class="register">Register</a>
