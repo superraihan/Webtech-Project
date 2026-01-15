@@ -1,10 +1,13 @@
+<?php
+include 'db_connect.php';
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>PetAdopt</title>
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="home.css?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
 </head>
 <body>
 
@@ -39,6 +42,29 @@
 
 <section class="featured">
     <h2>Featured Pets</h2>
+    
+    <div class="featured-grid">
+        <?php
+        $sql = "SELECT * FROM pets WHERE status = 'available' ORDER BY id DESC LIMIT 8";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                $imagePath = !empty($row['image']) ? "uploads/".$row['image'] : "paw.png";
+                ?>
+                <div class="pet-card">
+                    <img src="<?php echo $imagePath; ?>" class="pet-img">
+                    <h3><?php echo $row['name']; ?></h3>
+                    <p class="pet-type"><?php echo $row['type']; ?></p>
+                    <p class="pet-age">Age: <?php echo $row['age']; ?> years</p>
+                </div>
+                <?php
+            }
+        } else {
+            echo "<p class='no-pets'>No pets available for adoption right now.</p>";
+        }
+        ?>
+    </div>
 </section>
 
 <?php include 'footer.php'; ?>
