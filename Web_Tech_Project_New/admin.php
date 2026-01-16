@@ -27,6 +27,41 @@ if (isset($_GET['delete_user_id'])) {
     exit();
 }
 
+// Handle adoption request approval
+if (isset($_GET['approve_request'])) {
+    $request_id = $_GET['approve_request'];
+    // Get the request details
+    $request = $conn->query("SELECT * FROM adoption_request WHERE id=$request_id")->fetch_assoc();
+    if ($request) {
+        $pet_id = $request['pet_id'];
+        $user_id = $request['user_id'];
+        // Update request status to approved
+        $conn->query("UPDATE adoption_request SET status='approved' WHERE id=$request_id");
+        // Update pet status to adopted
+        $conn->query("UPDATE pets SET status='adopted' WHERE id=$pet_id");
+        // Reject all other pending requests for this pet
+        $conn->query("UPDATE adoption_request SET status='rejected' WHERE pet_id=$pet_id AND id!=$request_id AND status='pending'");
+    }
+    header("Location: admin.php");
+    exit();
+}
+
+// Handle adoption request rejection
+if (isset($_GET['reject_request'])) {
+    $request_id = $_GET['reject_request'];
+    $conn->query("UPDATE adoption_request SET status='rejected' WHERE id=$request_id");
+    header("Location: admin.php");
+    exit();
+}
+
+// Handle delete adoption request
+if (isset($_GET['delete_request'])) {
+    $request_id = $_GET['delete_request'];
+    $conn->query("DELETE FROM adoption_request WHERE id=$request_id");
+    header("Location: admin.php");
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['add_pet'])) {
         $name = $_POST['name'];
@@ -96,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Admin Dashboard - PetAdopt</title>
     <link rel="stylesheet" href="home.css">
-    <link rel="stylesheet" href="admin.css?v=9">
+    <link rel="stylesheet" href="admin.css?v=12">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -132,7 +167,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <p>Total Pets</p>
                     </div>
                     <div class="stat-card">
-                        <h3>0</h3>
+                        <h3><?php echo $conn->query("SELECT * FROM adoption_request WHERE status='pending'")->num_rows; ?></h3>
                         <p>Pending Adoptions</p>
                     </div>
                 </div>
@@ -191,13 +226,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $result = $conn->query($sql);
                         if ($result->num_rows > 0) {
                             while($row = $result->fetch_assoc()) {
-                                $statusClass = $row['status'] == 'available' ? 'status-available' : 'status-adopted';
+                                $status = strtolower(trim($row['status']));
+                                if ($status == 'available') {
+                                    $statusClass = 'status-available';
+                                } elseif ($status == 'pending') {
+                                    $statusClass = 'status-pending';
+                                } elseif ($status == 'adopted') {
+                                    $statusClass = 'status-adopted';
+                                } else {
+                                    $statusClass = 'status-unknown';
+                                }
+                                $statusText = !empty($status) ? ucfirst($status) : 'Unknown';
                                 echo "<tr>
                                     <td><img src='uploads/".$row['image']."' class='pet-thumb'></td>
                                     <td>".$row['name']."</td>
                                     <td>".$row['type']."</td>
                                     <td>".$row['age']." yrs</td>
-                                    <td><span class='status-badge ".$statusClass."'>".ucfirst($row['status'])."</span></td>
+                                    <td><span class='status-badge ".$statusClass."'>".$statusText."</span></td>
                                     <td>
                                         <button class='btn-edit' onclick='editPet(".json_encode($row).")'>Edit</button>
                                         <a href='admin.php?delete_id=".$row['id']."' onclick='return confirm(\"Are you sure?\")'><button class='btn-delete'>Delete</button></a>
@@ -214,7 +259,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div id="adoptions" class="section-content">
                 <h2>Adoption Requests</h2>
-                <p>No pending requests.</p>
+                
+                <div class="filter-tabs">
+                    <button class="filter-btn active" onclick="filterRequests('all')">All</button>
+                    <button class="filter-btn" onclick="filterRequests('pending')">Pending</button>
+                    <button class="filter-btn" onclick="filterRequests('approved')">Approved</button>
+                    <button class="filter-btn" onclick="filterRequests('rejected')">Rejected</button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Pet</th>
+                            <th>Request Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $sql = "SELECT ar.*, u.name as user_name, u.email as user_email, p.name as pet_name, p.type as pet_type 
+                                FROM adoption_request ar 
+                                JOIN users u ON ar.user_id = u.id 
+                                JOIN pets p ON ar.pet_id = p.id 
+                                ORDER BY ar.request_at DESC";
+                        $result = $conn->query($sql);
+                        if ($result && $result->num_rows > 0) {
+                            while($row = $result->fetch_assoc()) {
+                                $statusClass = '';
+                                if ($row['status'] == 'pending') $statusClass = 'status-pending';
+                                elseif ($row['status'] == 'approved') $statusClass = 'status-available';
+                                else $statusClass = 'status-rejected';
+                                
+                                echo "<tr data-status='".$row['status']."'>
+                                    <td>".$row['id']."</td>
+                                    <td>".$row['user_name']."<br><small style='color:#888'>".$row['user_email']."</small></td>
+                                    <td>".$row['pet_name']." <small style='color:#888'>(".$row['pet_type'].")</small></td>
+                                    <td>".date('M d, Y', strtotime($row['request_at']))."</td>
+                                    <td><span class='status-badge ".$statusClass."'>".ucfirst($row['status'])."</span></td>
+                                    <td>";
+                                
+                                if ($row['status'] == 'pending') {
+                                    echo "<a href='admin.php?approve_request=".$row['id']."' onclick='return confirm(\"Approve this adoption request?\")' class='btn-approve'>Approve</a> ";
+                                    echo "<a href='admin.php?reject_request=".$row['id']."' onclick='return confirm(\"Reject this adoption request?\")' class='btn-reject'>Reject</a>";
+                                } else {
+                                    echo "<a href='admin.php?delete_request=".$row['id']."' onclick='return confirm(\"Delete this request?\")' class='btn-delete-small'>Delete</a>";
+                                }
+                                
+                                echo "</td>
+                                </tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='6' style='text-align:center; padding:30px;'>No adoption requests yet.</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
 
             <div id="settings" class="section-content">
@@ -296,6 +398,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label>Status</label>
                     <select name="status" id="p_status" required>
                         <option value="available">Available</option>
+                        <option value="pending">Pending</option>
                         <option value="adopted">Adopted</option>
                     </select>
                 </div>
@@ -306,6 +409,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <script src="admin.js?v=10"></script>
+    <script src="admin.js?v=12"></script>
 </body>
 </html>

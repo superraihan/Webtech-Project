@@ -3,6 +3,31 @@ session_start();
 include 'db_connect.php';
 
 $filter_type = "";
+$message = "";
+$message_type = "";
+
+// Handle adoption request
+if (isset($_POST['request_adoption']) && isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $pet_id = $_POST['pet_id'];
+    
+    // Check if user already has a pending request for this pet
+    $check = $conn->query("SELECT * FROM adoption_request WHERE user_id=$user_id AND pet_id=$pet_id AND status='pending'");
+    if ($check->num_rows > 0) {
+        $message = "You already have a pending request for this pet.";
+        $message_type = "error";
+    } else {
+        // Insert adoption request
+        $sql = "INSERT INTO adoption_request (user_id, pet_id, status) VALUES ($user_id, $pet_id, 'pending')";
+        if ($conn->query($sql)) {
+            $message = "Adoption request submitted successfully! We'll review your application soon.";
+            $message_type = "success";
+        } else {
+            $message = "Error submitting request. Please try again.";
+            $message_type = "error";
+        }
+    }
+}
 
 $sql = "SELECT * FROM pets WHERE status = 'available'";
 
@@ -34,6 +59,10 @@ $result = $conn->query($sql);
 <section class="pets-header">
     <h1>Find Your New <span>Best Friend</span></h1>
     <p>Browse through our available pets by category.</p>
+    
+    <?php if ($message): ?>
+        <div class="alert <?php echo $message_type; ?>"><?php echo $message; ?></div>
+    <?php endif; ?>
 </section>
 
 <section class="filter-section">
@@ -60,9 +89,12 @@ $result = $conn->query($sql);
                         <p class="age">Age: <?php echo $row['age']; ?> years</p>
                         <p class="desc"><?php echo $row['description']; ?></p>
                         
-                        <?php if(isset($_SESSION['email'])): ?>
-                            <a href="user.php"><button class="adopt-btn">Adopt Now</button></a>
-                        <?php else: ?>
+                        <?php if(isset($_SESSION['user_id']) && (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin')): ?>
+                            <form method="POST" style="margin-top: 10px;">
+                                <input type="hidden" name="pet_id" value="<?php echo $row['id']; ?>">
+                                <button type="submit" name="request_adoption" class="adopt-btn">Request Adoption</button>
+                            </form>
+                        <?php elseif(!isset($_SESSION['email'])): ?>
                             <a href="login.php"><button class="adopt-btn">Login to Adopt</button></a>
                         <?php endif; ?>
                     </div>

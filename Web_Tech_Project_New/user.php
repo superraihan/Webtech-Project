@@ -239,7 +239,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <?php include 'footer.php'; ?>
     <script src="user.js?v=13"></script>
 </body>
 </html>
