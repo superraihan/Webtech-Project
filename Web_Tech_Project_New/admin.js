@@ -50,3 +50,24 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
+// Filter adoption requests
+function filterRequests(status) {
+    const rows = document.querySelectorAll('#adoptions tbody tr');
+    const buttons = document.querySelectorAll('.filter-btn');
+    
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    
+    rows.forEach(row => {
+        if (status === 'all') {
+            row.style.display = '';
+        } else {
+            if (row.getAttribute('data-status') === status) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+}

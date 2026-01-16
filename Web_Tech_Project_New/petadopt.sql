@@ -75,7 +75,7 @@ CREATE TABLE `pets` (
   `age` int(11) NOT NULL,
   `description` text NOT NULL,
   `image` varchar(255) NOT NULL,
-  `status` enum('available','adopted') NOT NULL DEFAULT 'available'
+  `status` enum('available','pending','adopted') NOT NULL DEFAULT 'available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
