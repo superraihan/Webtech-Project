@@ -27,26 +27,26 @@ if (isset($_GET['delete_user_id'])) {
     exit();
 }
 
-// Handle adoption request approval
+
 if (isset($_GET['approve_request'])) {
     $request_id = $_GET['approve_request'];
-    // Get the request details
+    
     $request = $conn->query("SELECT * FROM adoption_request WHERE id=$request_id")->fetch_assoc();
     if ($request) {
         $pet_id = $request['pet_id'];
         $user_id = $request['user_id'];
-        // Update request status to approved
+        
         $conn->query("UPDATE adoption_request SET status='approved' WHERE id=$request_id");
-        // Update pet status to adopted
+        
         $conn->query("UPDATE pets SET status='adopted' WHERE id=$pet_id");
-        // Reject all other pending requests for this pet
+        
         $conn->query("UPDATE adoption_request SET status='rejected' WHERE pet_id=$pet_id AND id!=$request_id AND status='pending'");
     }
     header("Location: admin.php");
     exit();
 }
 
-// Handle adoption request rejection
+
 if (isset($_GET['reject_request'])) {
     $request_id = $_GET['reject_request'];
     $conn->query("UPDATE adoption_request SET status='rejected' WHERE id=$request_id");
@@ -54,7 +54,7 @@ if (isset($_GET['reject_request'])) {
     exit();
 }
 
-// Handle delete adoption request
+
 if (isset($_GET['delete_request'])) {
     $request_id = $_GET['delete_request'];
     $conn->query("DELETE FROM adoption_request WHERE id=$request_id");

@@ -51,7 +51,6 @@ window.onclick = function(event) {
     }
 }
 
-// Filter adoption requests
 function filterRequests(status) {
     const rows = document.querySelectorAll('#adoptions tbody tr');
     const buttons = document.querySelectorAll('.filter-btn');
