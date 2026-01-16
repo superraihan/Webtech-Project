@@ -5,7 +5,7 @@ session_start();
 $success_message = '';
 $error_message = '';
 
-// Handle form submission
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error_message = 'Please enter a valid email address.';
     } else {
-        // In a real application, you would send an email or save to database here
+        
         $success_message = 'Thank you for your message! We will get back to you soon.';
     }
 }

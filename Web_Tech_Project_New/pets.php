@@ -6,18 +6,18 @@ $filter_type = "";
 $message = "";
 $message_type = "";
 
-// Handle adoption request
+
 if (isset($_POST['request_adoption']) && isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
     $pet_id = $_POST['pet_id'];
     
-    // Check if user already has a pending request for this pet
+    
     $check = $conn->query("SELECT * FROM adoption_request WHERE user_id=$user_id AND pet_id=$pet_id AND status='pending'");
     if ($check->num_rows > 0) {
         $message = "You already have a pending request for this pet.";
         $message_type = "error";
     } else {
-        // Insert adoption request
+        
         $sql = "INSERT INTO adoption_request (user_id, pet_id, status) VALUES ($user_id, $pet_id, 'pending')";
         if ($conn->query($sql)) {
             $message = "Adoption request submitted successfully! We'll review your application soon.";
