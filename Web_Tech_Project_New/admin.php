@@ -40,6 +40,8 @@ if (isset($_GET['approve_request'])) {
         
         $conn->query("UPDATE pets SET status='adopted' WHERE id=$pet_id");
         
+        $conn->query("INSERT INTO adoption (user_id, pet_id) VALUES ($user_id, $pet_id)");
+        
         $conn->query("UPDATE adoption_request SET status='rejected' WHERE pet_id=$pet_id AND id!=$request_id AND status='pending'");
     }
     header("Location: admin.php");
