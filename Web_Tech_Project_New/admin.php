@@ -8,6 +8,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 $admin_name = $_SESSION['admin_name'];
+$msg = "";
+$error = "";
 
 if (!is_dir('uploads')) {
     mkdir('uploads');
@@ -30,36 +32,77 @@ if (isset($_GET['delete_user_id'])) {
 if (isset($_GET['approve_request'])) {
     $request_id = $_GET['approve_request'];
     
-    $request = $conn->query("SELECT * FROM adoption_request WHERE id=$request_id")->fetch_assoc();
-    if ($request) {
+    $req_qry = $conn->query("SELECT * FROM adoption_request WHERE id='$request_id'");
+    
+    if ($req_qry && $req_qry->num_rows > 0) {
+        $request = $req_qry->fetch_assoc();
         $pet_id = $request['pet_id'];
         $user_id = $request['user_id'];
         
-        $conn->query("UPDATE adoption_request SET status='approved' WHERE id=$request_id");
-        $conn->query("UPDATE pets SET status='adopted' WHERE id=$pet_id");
-        $conn->query("INSERT INTO adoption (user_id, pet_id) VALUES ($user_id, $pet_id)");
+        if (!$conn->query("UPDATE adoption_request SET status='approved' WHERE id='$request_id'")) {
+            die("Error updating request status: " . $conn->error);
+        }
         
-        $conn->query("UPDATE adoption_request SET status='rejected' WHERE pet_id=$pet_id AND id!=$request_id AND status='pending'");
+        if (!$conn->query("UPDATE pets SET status='adopted' WHERE id='$pet_id'")) {
+            die("Error updating pet status: " . $conn->error);
+        }
+        
+        $check_adoption = $conn->query("SELECT * FROM adoption WHERE pet_id='$pet_id'");
+        if ($check_adoption->num_rows == 0) {
+            $insert_query = "INSERT INTO adoption (user_id, pet_id) VALUES ('$user_id', '$pet_id')";
+            if (!$conn->query($insert_query)) {
+                die("Error inserting into adoption table: " . $conn->error);
+            }
+        }
+        
+        $conn->query("UPDATE adoption_request SET status='rejected' WHERE pet_id='$pet_id' AND id!='$request_id' AND status='pending'");
     }
+    
     header("Location: admin.php");
     exit();
 }
 
 if (isset($_GET['reject_request'])) {
     $request_id = $_GET['reject_request'];
-    $conn->query("UPDATE adoption_request SET status='rejected' WHERE id=$request_id");
+    $conn->query("UPDATE adoption_request SET status='rejected' WHERE id='$request_id'");
     header("Location: admin.php");
     exit();
 }
 
 if (isset($_GET['delete_request'])) {
     $request_id = $_GET['delete_request'];
-    $conn->query("DELETE FROM adoption_request WHERE id=$request_id");
+    $conn->query("DELETE FROM adoption_request WHERE id='$request_id'");
     header("Location: admin.php");
     exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    if (isset($_POST['sync_db'])) {
+        $conn->query("UPDATE pets SET status='available' WHERE status IS NULL OR status=''");
+        
+        $conn->query("UPDATE pets p 
+                      INNER JOIN adoption_request ar ON p.id = ar.pet_id 
+                      SET p.status = 'adopted' 
+                      WHERE ar.status = 'approved'");
+        
+        $approved_reqs = $conn->query("SELECT * FROM adoption_request WHERE status='approved'");
+        while($row = $approved_reqs->fetch_assoc()) {
+            $u_id = $row['user_id'];
+            $p_id = $row['pet_id'];
+            
+            $chk = $conn->query("SELECT * FROM adoption WHERE pet_id='$p_id'");
+            if($chk->num_rows == 0) {
+                if(!$conn->query("INSERT INTO adoption (user_id, pet_id) VALUES ('$u_id', '$p_id')")){
+                    $error = "Error syncing id $p_id: " . $conn->error;
+                }
+            }
+        }
+        if(!$error) {
+            $msg = "Database synchronized successfully!";
+        }
+    }
+
     if (isset($_POST['add_pet'])) {
         $name = $_POST['name'];
         $type = $_POST['type'];
@@ -67,13 +110,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $desc = $_POST['description'];
         $status = $_POST['status'];
         
-        $image = $_FILES['image']['name'];
-        $target = "uploads/" . basename($image);
-        move_uploaded_file($_FILES['image']['tmp_name'], $target);
+        if (empty($name) || empty($type) || $age < 0) {
+            $error = "Please fill all fields correctly.";
+        } else {
+            $image = $_FILES['image']['name'];
+            $target = "uploads/" . basename($image);
+            move_uploaded_file($_FILES['image']['tmp_name'], $target);
 
-        $sql = "INSERT INTO pets (name, type, age, description, image, status) VALUES ('$name', '$type', '$age', '$desc', '$image', '$status')";
-        $conn->query($sql);
-        header("Location: admin.php");
+            $sql = "INSERT INTO pets (name, type, age, description, image, status) VALUES ('$name', '$type', '$age', '$desc', '$image', '$status')";
+            if($conn->query($sql)) {
+                $msg = "Pet added successfully!";
+            } else {
+                $error = "Error adding pet: " . $conn->error;
+            }
+        }
     }
 
     if (isset($_POST['update_pet'])) {
@@ -93,8 +143,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sql = "UPDATE pets SET name='$name', type='$type', age='$age', description='$desc', status='$status' WHERE id=$id";
         }
         
-        $conn->query($sql);
-        header("Location: admin.php");
+        if($conn->query($sql)) {
+            echo "<script>window.location.href='admin.php';</script>";
+            exit();
+        } else {
+            $error = "Error updating pet: " . $conn->error;
+        }
     }
 
     if (isset($_POST['update_admin'])) {
@@ -102,10 +156,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $new_password = $_POST['admin_password'];
         $admin_email = $_SESSION['email'];
         
-        $sql = "UPDATE admins SET name='$new_name', password='$new_password' WHERE email='$admin_email'";
-        $conn->query($sql);
-        $_SESSION['admin_name'] = $new_name;
-        header("Location: admin.php");
+        if(empty($new_name) || empty($new_password)) {
+            $error = "Name and Password cannot be empty.";
+        } else {
+            $sql = "UPDATE admins SET name='$new_name', password='$new_password' WHERE email='$admin_email'";
+            if($conn->query($sql)) {
+                $_SESSION['admin_name'] = $new_name;
+                $msg = "Profile updated!";
+            } else {
+                $error = "Error updating profile.";
+            }
+        }
     }
 
     if (isset($_POST['add_admin'])) {
@@ -113,12 +174,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $new_admin_email = $_POST['new_admin_email'];
         $new_admin_password = $_POST['new_admin_password'];
         
-        $check = $conn->query("SELECT * FROM admins WHERE email='$new_admin_email'");
-        if ($check->num_rows == 0) {
-            $sql = "INSERT INTO admins (name, email, password) VALUES ('$new_admin_name', '$new_admin_email', '$new_admin_password')";
-            $conn->query($sql);
+        if(empty($new_admin_name) || empty($new_admin_email) || empty($new_admin_password)) {
+            $error = "All fields are required.";
+        } else {
+            $check = $conn->query("SELECT * FROM admins WHERE email='$new_admin_email'");
+            if ($check->num_rows == 0) {
+                $sql = "INSERT INTO admins (name, email, password) VALUES ('$new_admin_name', '$new_admin_email', '$new_admin_password')";
+                if($conn->query($sql)) {
+                    $msg = "New Admin Added!";
+                } else {
+                    $error = "Error adding admin.";
+                }
+            } else {
+                $error = "Email already exists.";
+            }
         }
-        header("Location: admin.php");
     }
 }
 ?>
@@ -128,7 +198,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Admin Dashboard - PetAdopt</title>
     <link rel="stylesheet" href="home.css">
-    <link rel="stylesheet" href="admin.css?v=17">
+    <link rel="stylesheet" href="admin.css?v=23">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -150,6 +220,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="main-content">
             
+            <?php if($msg) echo "<div class='msg-box msg-success'>$msg</div>"; ?>
+            <?php if($error) echo "<div class='msg-box msg-error'>$error</div>"; ?>
+
             <div id="dashboard" class="section-content active">
                 <h2>Admin Overview</h2>
                 <p>Welcome, <strong><?php echo $admin_name; ?></strong>!</p>
@@ -293,8 +366,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 
                                 echo "<tr data-status='".$row['status']."'>
                                     <td>".$row['id']."</td>
-                                    <td>".$row['user_name']."<br><small style='color:#888'>".$row['user_email']."</small></td>
-                                    <td>".$row['pet_name']." <small style='color:#888'>(".$row['pet_type'].")</small></td>
+                                    <td>".$row['user_name']."<br><small class='sub-text'>".$row['user_email']."</small></td>
+                                    <td>".$row['pet_name']." <small class='sub-text'>(".$row['pet_type'].")</small></td>
                                     <td>".date('M d, Y', strtotime($row['request_at']))."</td>
                                     <td><span class='status-badge ".$statusClass."'>".ucfirst($row['status'])."</span></td>
                                     <td>";
@@ -310,7 +383,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='6' style='text-align:center; padding:30px;'>No adoption requests yet.</td></tr>";
+                            echo "<tr><td colspan='6' class='no-data'>No adoption requests yet.</td></tr>";
                         }
                         ?>
                     </tbody>
@@ -341,23 +414,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <div class="settings-box">
                         <h3>Add New Admin</h3>
-                        <form action="" method="POST">
+                        <form action="" method="POST" onsubmit="return validateAdminForm()">
                             <div class="form-group">
                                 <label>Admin Name</label>
-                                <input type="text" name="new_admin_name" placeholder="Enter name" required>
+                                <input type="text" name="new_admin_name" id="new_admin_name" placeholder="Enter name">
                             </div>
                             <div class="form-group">
                                 <label>Admin Email</label>
-                                <input type="email" name="new_admin_email" placeholder="Enter email" required>
+                                <input type="email" name="new_admin_email" id="new_admin_email" placeholder="Enter email">
                             </div>
                             <div class="form-group">
                                 <label>Admin Password</label>
-                                <input type="text" name="new_admin_password" placeholder="Enter password" required>
+                                <input type="text" name="new_admin_password" id="new_admin_password" placeholder="Enter password">
                             </div>
+                            <p id="admin-error" class="error-text"></p>
                             <button type="submit" name="add_admin" class="btn-update">Add Admin</button>
                         </form>
                     </div>
                 </div>
+
+                <div class="settings-box maintenance-box">
+                    <h3 class="maintenance-title">Maintenance</h3>
+                    <p class="maintenance-text">If adoption statuses are not showing correctly in the dashboard, click this button to sync database.</p>
+                    <form action="" method="POST">
+                        <button type="submit" name="sync_db" class="btn-update btn-sync">Fix Database Issues</button>
+                    </form>
+                </div>
+
             </div>
 
         </div>
@@ -367,19 +450,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h3 id="modalTitle">Add New Pet</h3>
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form action="" method="POST" enctype="multipart/form-data" onsubmit="return validatePetForm()">
                 <input type="hidden" name="pet_id" id="pet_id">
                 <div class="form-group">
                     <label>Pet Name</label>
-                    <input type="text" name="name" id="p_name" placeholder="Enter pet name" required>
+                    <input type="text" name="name" id="p_name" placeholder="Enter pet name">
                 </div>
                 <div class="form-group">
                     <label>Type</label>
-                    <input type="text" name="type" id="p_type" placeholder="Dog, Cat, Bird, etc." required>
+                    <input type="text" name="type" id="p_type" placeholder="Dog, Cat, Bird, etc.">
                 </div>
                 <div class="form-group">
                     <label>Age (Years)</label>
-                    <input type="number" name="age" id="p_age" placeholder="Enter age in years" min="0" required>
+                    <input type="number" name="age" id="p_age" placeholder="Enter age in years" min="0">
                 </div>
                 <div class="form-group">
                     <label>Description</label>
@@ -391,14 +474,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="form-group">
                     <label>Status</label>
-                    <select name="status" id="p_status" required>
+                    <select name="status" id="p_status">
                         <option value="available">Available</option>
                         <option value="pending">Pending</option>
                         <option value="adopted">Adopted</option>
                     </select>
                 </div>
+                <p id="pet-error" class="error-text"></p>
                 <button type="submit" name="add_pet" id="addBtn" class="btn-update">Add Pet</button>
-                <button type="submit" name="update_pet" id="updateBtn" class="btn-update" style="display:none;">Update Pet</button>
+                <button type="submit" name="update_pet" id="updateBtn" class="btn-update hidden">Update Pet</button>
             </form>
         </div>
     </div>
@@ -407,7 +491,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="modal-content">
             <span class="close" onclick="closeConfirmModal()">&times;</span>
             <h3>Confirm Action</h3>
-            <p id="confirmText" style="color: #ccc; margin: 20px 0; font-size: 16px;">Are you sure?</p>
+            <p id="confirmText" class="confirm-text">Are you sure?</p>
             <div class="confirm-actions">
                 <a id="confirmBtnLink" href="#" class="btn-confirm-yes">Yes, I'm Sure</a>
                 <button onclick="closeConfirmModal()" class="btn-confirm-cancel">Cancel</button>
@@ -415,6 +499,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <script src="admin.js?v=4"></script>
+    <script src="admin.js?v=8"></script>
 </body>
 </html>

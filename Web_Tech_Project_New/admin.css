@@ -520,3 +520,18 @@ tr:hover {
 .btn-confirm-cancel:hover {
     background: #555;
 }
+
+.msg-box { padding: 10px; margin-bottom: 20px; border-radius: 5px; text-align: center; }
+.msg-success { background-color: #22c55e; color: white; }
+.msg-error { background-color: #ef4444; color: white; }
+
+.maintenance-box { margin-top: 30px; width: 100%; border-color: #f97316; }
+.maintenance-title { color: #f97316; }
+.maintenance-text { color: #ccc; margin-bottom: 15px; }
+.btn-sync { background: #22c55e; }
+
+.hidden { display: none; }
+.error-text { color: red; display: none; margin-bottom: 10px; font-size: 12px; }
+.sub-text { color: #888; }
+.no-data { text-align: center; padding: 30px; }
+.confirm-text { color: #ccc; margin: 20px 0; font-size: 16px; }
