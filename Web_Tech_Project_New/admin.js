@@ -20,8 +20,10 @@ function openModal() {
         modal.style.display = "flex";
         document.getElementById("modalTitle").innerText = "Add New Pet";
         document.getElementById("addBtn").style.display = "block";
+        document.getElementById("updateBtn").classList.add("hidden");
         document.getElementById("updateBtn").style.display = "none";
         document.querySelector("form").reset();
+        document.getElementById("pet-error").style.display = "none";
     }
 }
 
@@ -34,7 +36,9 @@ function editPet(pet) {
         modal.style.display = "flex";
         document.getElementById("modalTitle").innerText = "Edit Pet";
         document.getElementById("addBtn").style.display = "none";
+        document.getElementById("updateBtn").classList.remove("hidden");
         document.getElementById("updateBtn").style.display = "block";
+        document.getElementById("pet-error").style.display = "none";
 
         document.getElementById("pet_id").value = pet.id;
         document.getElementById("p_name").value = pet.name;
@@ -94,4 +98,48 @@ function filterRequests(status) {
             }
         }
     });
+}
+
+function validatePetForm() {
+    let name = document.getElementById("p_name").value.trim();
+    let type = document.getElementById("p_type").value.trim();
+    let age = document.getElementById("p_age").value;
+    let errorMsg = document.getElementById("pet-error");
+
+    if (name === "" || type === "" || age === "") {
+        errorMsg.style.display = "block";
+        errorMsg.innerText = "All fields (Name, Type, Age) are required!";
+        return false;
+    }
+    
+    if (age < 0) {
+        errorMsg.style.display = "block";
+        errorMsg.innerText = "Age cannot be negative!";
+        return false;
+    }
+
+    errorMsg.style.display = "none";
+    return true;
+}
+
+function validateAdminForm() {
+    let name = document.getElementById("new_admin_name").value.trim();
+    let email = document.getElementById("new_admin_email").value.trim();
+    let password = document.getElementById("new_admin_password").value.trim();
+    let errorMsg = document.getElementById("admin-error");
+
+    if (name === "" || email === "" || password === "") {
+        errorMsg.style.display = "block";
+        errorMsg.innerText = "All fields are required to add an admin!";
+        return false;
+    }
+
+    if (!email.includes("@") || !email.includes(".")) {
+        errorMsg.style.display = "block";
+        errorMsg.innerText = "Please enter a valid email address!";
+        return false;
+    }
+
+    errorMsg.style.display = "none";
+    return true;
 }
