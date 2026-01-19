@@ -165,8 +165,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <p>Total Users</p>
                     </div>
                     <div class="stat-card">
-                        <h3><?php echo $conn->query("SELECT * FROM pets")->num_rows; ?></h3>
-                        <p>Total Pets</p>
+                        <h3><?php echo $conn->query("SELECT * FROM admins")->num_rows; ?></h3>
+                        <p>Total Admins</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3><?php echo $conn->query("SELECT * FROM pets WHERE status='available'")->num_rows; ?></h3>
+                        <p>Available Pets</p>
                     </div>
                     <div class="stat-card">
                         <h3><?php echo $conn->query("SELECT * FROM adoption_request WHERE status='pending'")->num_rows; ?></h3>

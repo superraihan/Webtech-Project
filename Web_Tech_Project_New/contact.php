@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Contact Us - PetAdopt</title>
-    <link rel="stylesheet" href="contact.css?v=1">
+    <link rel="stylesheet" href="contact.css?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -85,72 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="contact-form-container">
-            <h2>Send Us a Message</h2>
-            
-            <?php if ($success_message): ?>
-                <div class="alert success"><?php echo $success_message; ?></div>
-            <?php endif; ?>
-            
-            <?php if ($error_message): ?>
-                <div class="alert error"><?php echo $error_message; ?></div>
-            <?php endif; ?>
-            
-            <form method="POST" action="" class="contact-form">
-                <div class="form-group">
-                    <label for="name">Your Name</label>
-                    <input type="text" id="name" name="name" placeholder="John Doe" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="john@example.com" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="subject">Subject</label>
-                    <select id="subject" name="subject" required>
-                        <option value="">Select a subject</option>
-                        <option value="adoption">Pet Adoption Inquiry</option>
-                        <option value="volunteer">Volunteer Opportunities</option>
-                        <option value="partnership">Shelter Partnership</option>
-                        <option value="donation">Donations</option>
-                        <option value="feedback">Feedback</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="message">Your Message</label>
-                    <textarea id="message" name="message" rows="5" placeholder="Tell us how we can help you..." required></textarea>
-                </div>
-                
-                <button type="submit" class="submit-btn">Send Message</button>
-            </form>
-        </div>
-    </div>
-</section>
-
-<section class="faq">
-    <h2>Frequently Asked Questions</h2>
-    <div class="faq-grid">
-        <div class="faq-item">
-            <h3>How do I adopt a pet?</h3>
-            <p>Browse our available pets, click on one you're interested in, and fill out the adoption application. Our team will review your application and contact you within 48 hours.</p>
-        </div>
-        <div class="faq-item">
-            <h3>What are the adoption fees?</h3>
-            <p>Adoption fees vary depending on the pet and include vaccinations, microchipping, and spaying/neutering. Fees typically range from $50 to $300.</p>
-        </div>
-        <div class="faq-item">
-            <h3>Can I return an adopted pet?</h3>
-            <p>We have a 30-day adjustment period. If things don't work out, please contact us and we'll help find a solution or accept the pet back.</p>
-        </div>
-        <div class="faq-item">
-            <h3>How can I become a volunteer?</h3>
-            <p>We're always looking for passionate volunteers! Fill out the contact form above or email us at volunteer@petadopt.com to learn about opportunities.</p>
         </div>
     </div>
 </section>
