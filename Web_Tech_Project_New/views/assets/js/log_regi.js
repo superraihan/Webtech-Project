@@ -98,3 +98,34 @@ function validateNewPass() {
 
     return true;
 }
+function showLoginSuccess(redirectUrl, userName) {
+    var popup = document.getElementById('custom-popup');
+    var msg = document.getElementById('popup-msg');
+    
+    if (msg && popup) {
+        msg.innerText = 'Welcome ' + userName + ' ';
+        popup.style.display = 'flex';
+
+        popup.addEventListener('click', function (e) {
+            if (e.target === popup) {
+                window.location.href = redirectUrl;
+            }
+        });
+        
+        let btn = popup.querySelector('.popup-btn');
+        if(btn) {
+             btn.onclick = function() {
+                 window.location.href = redirectUrl;
+             };
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    let successData = document.getElementById('login-success-data');
+    if (successData) {
+        let redirectUrl = successData.getAttribute('data-redirect');
+        let userName = successData.getAttribute('data-username');
+        showLoginSuccess(redirectUrl, userName);
+    }
+});
