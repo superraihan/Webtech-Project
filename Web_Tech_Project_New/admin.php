@@ -27,7 +27,6 @@ if (isset($_GET['delete_user_id'])) {
     exit();
 }
 
-
 if (isset($_GET['approve_request'])) {
     $request_id = $_GET['approve_request'];
     
@@ -37,9 +36,7 @@ if (isset($_GET['approve_request'])) {
         $user_id = $request['user_id'];
         
         $conn->query("UPDATE adoption_request SET status='approved' WHERE id=$request_id");
-        
         $conn->query("UPDATE pets SET status='adopted' WHERE id=$pet_id");
-        
         $conn->query("INSERT INTO adoption (user_id, pet_id) VALUES ($user_id, $pet_id)");
         
         $conn->query("UPDATE adoption_request SET status='rejected' WHERE pet_id=$pet_id AND id!=$request_id AND status='pending'");
@@ -48,14 +45,12 @@ if (isset($_GET['approve_request'])) {
     exit();
 }
 
-
 if (isset($_GET['reject_request'])) {
     $request_id = $_GET['reject_request'];
     $conn->query("UPDATE adoption_request SET status='rejected' WHERE id=$request_id");
     header("Location: admin.php");
     exit();
 }
-
 
 if (isset($_GET['delete_request'])) {
     $request_id = $_GET['delete_request'];
@@ -133,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Admin Dashboard - PetAdopt</title>
     <link rel="stylesheet" href="home.css">
-    <link rel="stylesheet" href="admin.css?v=12">
+    <link rel="stylesheet" href="admin.css?v=17">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -200,7 +195,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <td>".$row["id"]."</td>
                                     <td>".$row["name"]."</td>
                                     <td>".$row["email"]."</td>
-                                    <td><a href='admin.php?delete_user_id=".$row['id']."' onclick='return confirm(\"Are you sure you want to delete this user?\")''><button class='btn-delete'>Delete</button></a></td>
+                                    <td><a href='javascript:void(0)' onclick=\"confirmAction('admin.php?delete_user_id=".$row['id']."', 'Are you sure you want to delete this user? This cannot be undone.', 'delete')\"><button class='btn-delete'>Delete</button></a></td>
                                 </tr>";
                             }
                         } else {
@@ -233,16 +228,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if ($result->num_rows > 0) {
                             while($row = $result->fetch_assoc()) {
                                 $status = strtolower(trim($row['status']));
-                                if ($status == 'available') {
-                                    $statusClass = 'status-available';
-                                } elseif ($status == 'pending') {
-                                    $statusClass = 'status-pending';
-                                } elseif ($status == 'adopted') {
-                                    $statusClass = 'status-adopted';
-                                } else {
-                                    $statusClass = 'status-unknown';
-                                }
+                                if ($status == 'available') $statusClass = 'status-available';
+                                elseif ($status == 'pending') $statusClass = 'status-pending';
+                                elseif ($status == 'adopted') $statusClass = 'status-adopted';
+                                else $statusClass = 'status-unknown';
+                                
                                 $statusText = !empty($status) ? ucfirst($status) : 'Unknown';
+                                
                                 echo "<tr>
                                     <td><img src='uploads/".$row['image']."' class='pet-thumb'></td>
                                     <td>".$row['name']."</td>
@@ -251,7 +243,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <td><span class='status-badge ".$statusClass."'>".$statusText."</span></td>
                                     <td>
                                         <button class='btn-edit' onclick='editPet(".json_encode($row).")'>Edit</button>
-                                        <a href='admin.php?delete_id=".$row['id']."' onclick='return confirm(\"Are you sure?\")'><button class='btn-delete'>Delete</button></a>
+                                        <a href='javascript:void(0)' onclick=\"confirmAction('admin.php?delete_id=".$row['id']."', 'Are you sure you want to delete this pet?', 'delete')\"><button class='btn-delete'>Delete</button></a>
                                     </td>
                                 </tr>";
                             }
@@ -308,10 +300,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <td>";
                                 
                                 if ($row['status'] == 'pending') {
-                                    echo "<a href='admin.php?approve_request=".$row['id']."' onclick='return confirm(\"Approve this adoption request?\")' class='btn-approve'>Approve</a> ";
-                                    echo "<a href='admin.php?reject_request=".$row['id']."' onclick='return confirm(\"Reject this adoption request?\")' class='btn-reject'>Reject</a>";
+                                    echo "<a href='javascript:void(0)' onclick=\"confirmAction('admin.php?approve_request=".$row['id']."', 'Do you want to Approve this request?', 'approve')\" class='btn-approve'>Approve</a> ";
+                                    echo "<a href='javascript:void(0)' onclick=\"confirmAction('admin.php?reject_request=".$row['id']."', 'Do you want to Reject this request?', 'reject')\" class='btn-reject'>Reject</a>";
                                 } else {
-                                    echo "<a href='admin.php?delete_request=".$row['id']."' onclick='return confirm(\"Delete this request?\")' class='btn-delete-small'>Delete</a>";
+                                    echo "<a href='javascript:void(0)' onclick=\"confirmAction('admin.php?delete_request=".$row['id']."', 'Delete this request record?', 'delete')\" class='btn-delete-small'>Delete</a>";
                                 }
                                 
                                 echo "</td>
@@ -327,12 +319,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div id="settings" class="section-content">
                 <h2>Admin Settings</h2>
-                
                 <?php
                 $admin_email = $_SESSION['email'];
                 $admin_data = $conn->query("SELECT * FROM admins WHERE email='$admin_email'")->fetch_assoc();
                 ?>
-                
                 <div class="settings-container">
                     <div class="settings-box">
                         <h3>Update Your Profile</h3>
@@ -379,7 +369,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h3 id="modalTitle">Add New Pet</h3>
             <form action="" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="pet_id" id="pet_id">
-                
                 <div class="form-group">
                     <label>Pet Name</label>
                     <input type="text" name="name" id="p_name" placeholder="Enter pet name" required>
@@ -394,7 +383,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea name="description" id="p_desc" rows="3" placeholder="Describe the pet's personality, health, habits..."></textarea>
+                    <textarea name="description" id="p_desc" rows="3" placeholder="Describe the pet's personality..."></textarea>
                 </div>
                 <div class="form-group">
                     <label>Pet Image</label>
@@ -408,13 +397,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <option value="adopted">Adopted</option>
                     </select>
                 </div>
-
                 <button type="submit" name="add_pet" id="addBtn" class="btn-update">Add Pet</button>
                 <button type="submit" name="update_pet" id="updateBtn" class="btn-update" style="display:none;">Update Pet</button>
             </form>
         </div>
     </div>
 
-    <script src="admin.js?v=12"></script>
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeConfirmModal()">&times;</span>
+            <h3>Confirm Action</h3>
+            <p id="confirmText" style="color: #ccc; margin: 20px 0; font-size: 16px;">Are you sure?</p>
+            <div class="confirm-actions">
+                <a id="confirmBtnLink" href="#" class="btn-confirm-yes">Yes, I'm Sure</a>
+                <button onclick="closeConfirmModal()" class="btn-confirm-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js?v=4"></script>
 </body>
 </html>

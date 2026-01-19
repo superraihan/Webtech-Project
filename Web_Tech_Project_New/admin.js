@@ -17,7 +17,7 @@ var modal = document.getElementById("petModal");
 
 function openModal() {
     if(modal) {
-        modal.style.display = "block";
+        modal.style.display = "flex";
         document.getElementById("modalTitle").innerText = "Add New Pet";
         document.getElementById("addBtn").style.display = "block";
         document.getElementById("updateBtn").style.display = "none";
@@ -31,7 +31,7 @@ function closeModal() {
 
 function editPet(pet) {
     if(modal) {
-        modal.style.display = "block";
+        modal.style.display = "flex";
         document.getElementById("modalTitle").innerText = "Edit Pet";
         document.getElementById("addBtn").style.display = "none";
         document.getElementById("updateBtn").style.display = "block";
@@ -45,9 +45,34 @@ function editPet(pet) {
     }
 }
 
+var confirmModal = document.getElementById("confirmModal");
+
+function confirmAction(url, message, type) {
+    if(confirmModal) {
+        document.getElementById("confirmText").innerText = message;
+        var confirmBtn = document.getElementById("confirmBtnLink");
+        confirmBtn.href = url;
+        
+        if (type === 'delete' || type === 'reject') {
+            confirmBtn.style.background = "#ef4444";
+        } else {
+            confirmBtn.style.background = "#22c55e";
+        }
+        
+        confirmModal.style.display = "flex";
+    }
+}
+
+function closeConfirmModal() {
+    if(confirmModal) confirmModal.style.display = "none";
+}
+
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = "none";
+    }
+    if (event.target == confirmModal) {
+        confirmModal.style.display = "none";
     }
 }
 
