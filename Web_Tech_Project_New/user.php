@@ -71,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>User Dashboard - PetAdopt</title>
     <link rel="stylesheet" href="home.css">
-    <link rel="stylesheet" href="user.css?v=13">
+    <link rel="stylesheet" href="user.css?v=14">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -109,13 +109,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo $pending_count->num_rows; 
                         ?></h3>
                         <p>Pending Requests</p>
-                    </div>
-
-                    <div class="stat-card">
-                        <h3><?php 
-                            echo $adopt_count->num_rows; 
-                        ?></h3>
-                        <p>Total Adoptions</p>
                     </div>
                 </div>
             </div>
@@ -239,6 +232,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <script src="user.js?v=13"></script>
+    <script src="user.js?v=14"></script>
 </body>
 </html>
