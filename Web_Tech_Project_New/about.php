@@ -87,36 +87,6 @@ include 'db_connect.php';
     </div>
 </section>
 
-<section class="team">
-    <h2>Meet Our Team</h2>
-    <div class="team-grid">
-        <div class="team-card">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fm=jpg&q=60&w=500&ixlib=rb-4.1.0" alt="Team member">
-            <h3>John Smith</h3>
-            <p class="role">Founder & CEO</p>
-            <p class="bio">Animal welfare advocate with 15 years of experience in nonprofit management.</p>
-        </div>
-        <div class="team-card">
-            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?fm=jpg&q=60&w=500&ixlib=rb-4.1.0" alt="Team member">
-            <h3>Sarah Johnson</h3>
-            <p class="role">Operations Director</p>
-            <p class="bio">Former veterinarian dedicated to improving animal adoption processes.</p>
-        </div>
-        <div class="team-card">
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?fm=jpg&q=60&w=500&ixlib=rb-4.1.0" alt="Team member">
-            <h3>Mike Davis</h3>
-            <p class="role">Shelter Relations</p>
-            <p class="bio">Connecting shelters with adopters for over a decade.</p>
-        </div>
-        <div class="team-card">
-            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?fm=jpg&q=60&w=500&ixlib=rb-4.1.0" alt="Team member">
-            <h3>Emily Brown</h3>
-            <p class="role">Community Manager</p>
-            <p class="bio">Building and nurturing our growing community of pet lovers.</p>
-        </div>
-    </div>
-</section>
-
 <section class="cta">
     <div class="cta-content">
         <h2>Ready to Find Your New Best Friend?</h2>

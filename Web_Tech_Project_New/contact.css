@@ -158,18 +158,16 @@ nav ul a:hover {
 
 /* Contact Section */
 .contact-section {
-    padding: 100px 60px;
+    padding: 80px 60px;
 }
 
 .contact-container {
-    display: flex;
-    gap: 60px;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
 .contact-info {
-    flex: 1;
+    width: 100%;
 }
 
 .contact-info h2 {
@@ -188,9 +186,10 @@ nav ul a:hover {
 }
 
 .info-items {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 30px;
+    max-width: 900px;
 }
 
 .info-item {
