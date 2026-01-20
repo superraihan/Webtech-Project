@@ -16,6 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "All fields are required!";
     } elseif ($pass != $cpass) {
         $error = "Passwords do not match!";
+    } elseif (strlen($phone) != 11) {
+            $error = "Phone number must be 11 digits!";
     } else {
         $check_email = "SELECT * FROM users WHERE email='$email'";
         $result = $conn->query($check_email);

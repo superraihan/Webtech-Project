@@ -4,7 +4,7 @@
 <head>
     <title>Available Pets - PetAdopt</title>
     <link rel="stylesheet" href="views/assets/css/home.css">
-    <link rel="stylesheet" href="views/assets/css/pets.css?v=3">
+    <link rel="stylesheet" href="views/assets/css/pets.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 </head>

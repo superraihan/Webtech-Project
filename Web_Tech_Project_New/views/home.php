@@ -3,8 +3,7 @@
 
 <head>
     <title>PetAdopt</title>
-    <!-- Update path to CSS -->
-    <link rel="stylesheet" href="views/assets/css/home.css?v=2">
+    <link rel="stylesheet" href="views/assets/css/home.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 </head>
@@ -73,7 +72,6 @@
 
     <?php include 'views/layout/footer.php'; ?>
 
-    <!-- Update path to JS -->
     <script src="views/assets/js/home.js"></script>
 </body>
 

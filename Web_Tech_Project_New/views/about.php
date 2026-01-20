@@ -3,9 +3,8 @@
 
 <head>
     <title>About Us - PetAdopt</title>
-    <!-- Using home.css for general styles -->
     <link rel="stylesheet" href="views/assets/css/home.css">
-    <link rel="stylesheet" href="views/assets/css/about.css?v=3">
+    <link rel="stylesheet" href="views/assets/css/about.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 </head>
@@ -13,8 +12,6 @@
 <body>
 
     <?php include 'views/layout/header.php'; ?>
-
-    <!-- Hero Section -->
     <section class="hero-about">
         <div class="hero-content">
             <p class="tag">🐶 WHO WE ARE</p>
@@ -24,7 +21,6 @@
         </div>
     </section>
 
-    <!-- Mission Section -->
     <section class="mission">
         <div class="mission-content">
             <div class="mission-text">
@@ -35,14 +31,12 @@
                     ensuring every animal finds the perfect match.</p>
             </div>
             <div class="mission-image">
-                <!-- Placeholder image or use a real one if available -->
                 <img src="https://images.unsplash.com/photo-1541599540903-216a46ca1dc0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
                     alt="Happy Dog">
             </div>
         </div>
     </section>
 
-    <!-- Values Section -->
     <section class="values">
         <h2>Our Core Values</h2>
         <div class="values-grid">
@@ -70,7 +64,6 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
     <section class="cta">
         <div class="cta-content">
             <h2>Ready to Adopt?</h2>

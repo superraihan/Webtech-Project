@@ -15,10 +15,7 @@ if (isset($_SESSION['flash_msg'])) {
     $msg = $_SESSION['flash_msg'];
     unset($_SESSION['flash_msg']);
 }
-if (isset($_SESSION['flash_error'])) {
-    $error = $_SESSION['flash_error'];
-    unset($_SESSION['flash_error']);
-}
+
 
 if (!is_dir('uploads')) {
     mkdir('uploads');
@@ -107,7 +104,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $image = $_FILES['image']['name'];
             $target = "uploads/" . basename($image);
             move_uploaded_file($_FILES['image']['tmp_name'], $target);
-
             $sql = "INSERT INTO pets (name, type, age, description, image, status) VALUES ('$name', '$type', '$age', '$desc', '$image', '$status')";
             if ($conn->query($sql)) {
                 $_SESSION['flash_msg'] = "Pet added successfully!";
@@ -219,8 +215,8 @@ $total_admins = $conn->query("SELECT * FROM admins")->num_rows;
 $available_pets_count = $conn->query("SELECT * FROM pets WHERE status='available'")->num_rows;
 $pending_requests_count = $conn->query("SELECT * FROM adoption_request WHERE status='pending'")->num_rows;
 
-$admin_email = $_SESSION['email'];
-$admin_data = $conn->query("SELECT * FROM admins WHERE email='$admin_email'")->fetch_assoc();
+    $admin_email = $_SESSION['email'];
+    $admin_data = $conn->query("SELECT * FROM admins WHERE email='$admin_email'")->fetch_assoc();
 
 require 'views/admin.php';
 ?>

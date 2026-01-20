@@ -3,8 +3,7 @@
 
 <head>
     <title>Contact Us - PetAdopt</title>
-    <!-- Update CSS path -->
-    <link rel="stylesheet" href="views/assets/css/contact.css?v=2">
+    <link rel="stylesheet" href="views/assets/css/contact.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 </head>
@@ -21,51 +20,8 @@
         </div>
     </section>
 
-    <!-- Display messages if any -->
-    <!-- The original code didn't seem to display specific success/error messages in the HTML body except setting variables? 
-     Ah, I see in original file: 
-     It sets $success_message/$error_message but where are they echoed?
-     Checking original file content...
-     I don't see echo $success_message in the view part!
-     It seems the original code was incomplete or I missed it.
-     I will add display logic for them.
--->
-    <?php if ($success_message): ?>
-        <div class="success-msg">
-            <?php echo $success_message; ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if ($error_message): ?>
-        <div class="error-msg">
-            <?php echo $error_message; ?>
-        </div>
-    <?php endif; ?>
-
-
     <section class="contact-section">
         <div class="contact-container">
-
-            <!-- Added form tag requirement if it was missing or assuming it handles post -->
-            <!-- Original file had HTML form? 
-             Wait, looking at Step 87...
-             It DOES NOT HAVE A FORM TAG wrapping inputs? 
-             It has <div class="contact-info"> ... </div>
-             But NO FORM visible in the snippet provided in Step 87!
-             Wait, Step 87 shows lines 1-96. The snippet ends at </html>.
-             It displays "Contact Information" but NO INPUT FIELDS!
-             The PHP logic at top checks for POST ['name'], ['email'] etc. 
-             But the HTML doesn't have a form?
-             Maybe I missed it or it was scrolled out?
-             "Showing lines 1 to 96". 
-             It seems the User's `contact.php` only displays info and has PHP logic for a form that IS MISSING from the view?
-             Or maybe the form was supposed to be there.
-             
-             I will preserve the current HTML. If the form is missing, I won't invent it unless asked, or I might have missed it if the file was larger than 96 lines?
-             "Total Lines: 96". So that's the whole file.
-             It seems `contact.php` is incomplete (has logic but no form UI).
-             I will just copy what's there.
-        -->
 
             <div class="contact-info">
                 <h2>Contact Information</h2>
