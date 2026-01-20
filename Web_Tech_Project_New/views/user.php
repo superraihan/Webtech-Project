@@ -4,7 +4,7 @@
 <head>
     <title>User Dashboard - PetAdopt</title>
     <link rel="stylesheet" href="views/assets/css/home.css">
-    <link rel="stylesheet" href="views/assets/css/user.css?v=14">
+    <link rel="stylesheet" href="views/assets/css/user.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -27,8 +27,8 @@
             <div id="dashboard" class="section-content active">
                 <h2>Overview</h2>
                 <p>Welcome back, <strong>
-                        <?php echo $user['name']; ?>
-                    </strong>! Here is your activity summary.</p>
+                        <?php echo $user['name']; ?></strong>
+                    ! Here is your activity summary.</p>
 
                 <div class="stats-grid">
                     <div class="stat-card">

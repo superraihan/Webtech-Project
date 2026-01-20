@@ -5,7 +5,6 @@ body {
     color: #ffffff;
 }
 
-/* Navigation Styles (same as home.css) */
 nav {
     display: flex;
     justify-content: space-between;
@@ -102,7 +101,6 @@ nav ul a:hover {
     color: #fff;
 }
 
-/* Hero Section */
 .hero-about {
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     padding: 100px 60px;
@@ -156,7 +154,6 @@ nav ul a:hover {
     margin: 0 auto;
 }
 
-/* Mission Section */
 .mission {
     padding: 100px 60px;
 }
@@ -199,7 +196,6 @@ nav ul a:hover {
     box-shadow: 0 20px 60px rgba(255, 140, 0, 0.2);
 }
 
-/* Values Section */
 .values {
     background: #1a1a1a;
     padding: 100px 60px;
@@ -251,7 +247,6 @@ nav ul a:hover {
     line-height: 1.7;
 }
 
-/* Story Section */
 .story {
     padding: 100px 60px;
 }
@@ -318,7 +313,6 @@ nav ul a:hover {
     letter-spacing: 1px;
 }
 
-/* Team Section */
 .team {
     background: #1a1a1a;
     padding: 100px 60px;
@@ -380,7 +374,6 @@ nav ul a:hover {
     line-height: 1.6;
 }
 
-/* CTA Section */
 .cta {
     padding: 100px 60px;
     text-align: center;
@@ -422,7 +415,6 @@ nav ul a:hover {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-/* Footer */
 footer {
     background: #000;
     color: #888;
@@ -431,7 +423,6 @@ footer {
     font-size: 14px;
 }
 
-/* Responsive Design */
 @media (max-width: 992px) {
     .mission-content,
     .story-content {

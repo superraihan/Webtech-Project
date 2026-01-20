@@ -21,7 +21,7 @@
                 echo "<div class='php-error'>$error</div>";
             } ?>
             <?php if (isset($success) && $success) {
-                echo "<div style='color:#4caf50; background:rgba(76, 175, 80, 0.1); padding:10px; border-radius:5px; margin-bottom:15px; border:1px solid #4caf50;'>$success</div>";
+                echo "<div class='php-success'>$success</div>";
             } ?>
 
             <p id="js-error" class="error-msg"></p>

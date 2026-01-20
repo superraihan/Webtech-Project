@@ -4,7 +4,7 @@
 <head>
     <title>Login - PetAdopt</title>
     <link rel="stylesheet" href="views/assets/css/home.css">
-    <link rel="stylesheet" href="views/assets/css/log_regi.css?v=3">
+    <link rel="stylesheet" href="views/assets/css/log_regi.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 </head>
@@ -61,7 +61,7 @@
             class="hidden"></div>
     <?php endif; ?>
 
-    <script src="views/assets/js/log_regi.js?v=4"></script>
+    <script src="views/assets/js/log_regi.js"></script>
 
 </body>
 

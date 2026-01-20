@@ -48,8 +48,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (empty($name) || empty($phone) || empty($address) || empty($password)) {
             $error = "All fields are required!";
-        } elseif (strlen($phone) < 11) {
-            $error = "Phone number must be at least 11 digits!";
+        } elseif (strlen($phone) != 11) {
+            $error = "Phone number must be 11 digits!";
         } else {
             $update_sql = "UPDATE users SET name='$name', phone='$phone', address='$address', password='$password' WHERE email='$email'";
 
