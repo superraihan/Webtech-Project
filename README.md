@@ -33,14 +33,10 @@ A robust, functional **Pet Adoption Management System** built with **Procedural 
 ## 📂 Project Structure
 
 ```text
-/project-root
-    /admin          # Admin dashboard and management logic
-    /user           # User dashboard and request logic
-    /includes       # Database connection & helper functions (db_connect.php)
-    /assets         # Static files
-        /css        # Stylesheets
-        /js         # JavaScript files
-        /images     # Pet images and uploads
-    /database       # SQL Schema (pet_adoption_db.sql)
-    index.php       # Landing page / Home
-    login.php       # Authentication entry point
+/WEB_TECH_PROJECT_NEW (Project Root)
+    /controllers    # Handles business logic and request processing
+    /models         # Database interaction and data logic
+    /views          # User Interface (HTML/PHP files for Admin & User)
+    /uploads        # User uploaded pet images
+    index.php       # Main entry point / Routing
+    petadop.sql     # Database Schema
