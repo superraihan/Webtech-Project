@@ -85,8 +85,7 @@
                                     <td>" . $row["id"] . "</td>
                                     <td>" . $row["name"] . "</td>
                                     <td>" . $row["email"] . "</td>
-                                    <td><a href='javascript:void(0)' onclick=\"confirmAction('index.php?page=admin&delete_user_id=" . $row['id'] . "', 'Are you sure you want to delete this user? This cannot be undone.', 'delete')\"><button class='btn-delete'>Delete</button></a></td>
-                                </tr>";
+                                    <td><button class ='btn-delete' onclick=\"confirmAction('index.php?page=admin&delete_user_id=" . $row['id'] . "', 'Are you sure you want to delete this user? This cannot be undone.', 'delete')\">Delete</button></td></tr>";
                             }
                         } else {
                             echo "<tr><td colspan='4'>No users found</td></tr>";
@@ -135,8 +134,7 @@
                                     <td><span class='status-badge " . $statusClass . "'>" . $statusText . "</span></td>
                                     <td>
                                         <button class='btn-edit' onclick='editPet(" . json_encode($row) . ")'>Edit</button>
-                                        <a href='javascript:void(0)' onclick=\"confirmAction('index.php?page=admin&delete_id=" . $row['id'] . "', 'Are you sure you want to delete this pet?', 'delete')\"><button class='btn-delete'>Delete</button></a>
-                                    </td>
+                                        <button class='btn-delete' onclick=\"confirmAction('index.php?page=admin&delete_id=" . $row['id'] . "', 'Are you sure you want to delete this pet?', 'delete')\">Delete</button>                                    </td>
                                 </tr>";
                             }
                         } else {
@@ -188,12 +186,11 @@
                                     <td><span class='status-badge " . $statusClass . "'>" . ucfirst($row['status']) . "</span></td>
                                     <td>";
 
-                                if ($row['status'] == 'pending') {
-                                    echo "<a href='javascript:void(0)' onclick=\"confirmAction('index.php?page=admin&approve_request=" . $row['id'] . "', 'Do you want to Approve this request?', 'approve')\" class='btn-approve'>Approve</a> ";
-                                    echo "<a href='javascript:void(0)' onclick=\"confirmAction('index.php?page=admin&reject_request=" . $row['id'] . "', 'Do you want to Reject this request?', 'reject')\" class='btn-reject'>Reject</a>";
+                                if ($row['status'] == 'pending') {  
+                                    echo "<button onclick=\"confirmAction('index.php?page=admin&approve_request=" . $row['id'] . "', 'Do you want to Approve this request?', 'approve')\" class='btn-approve'>Approve</button> ";
+                                    echo "<button onclick=\"confirmAction('index.php?page=admin&reject_request=" . $row['id'] . "', 'Do you want to Reject this request?', 'reject')\" class='btn-reject'>Reject</button>"; 
                                 } else {
-                                    echo "<a href='javascript:void(0)' onclick=\"confirmAction('index.php?page=admin&delete_request=" . $row['id'] . "', 'Delete this request record?', 'delete')\" class='btn-delete-small'>Delete</a>";
-                                }
+                                    echo "<button onclick=\"confirmAction('index.php?page=admin&delete_request=" . $row['id'] . "', 'Delete this request record?', 'delete')\" class='btn-delete-small'>Delete</button>";                                }
 
                                 echo "</td>
                                 </tr>";
