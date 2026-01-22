@@ -420,49 +420,7 @@ footer {
     font-size: 14px;
 }
 
-@media (max-width: 992px) {
-    .contact-container {
-        flex-direction: column;
-    }
 
-    .hero-contact h1 {
-        font-size: 40px;
-    }
-
-    nav {
-        padding: 20px 30px;
-    }
-}
-
-@media (max-width: 768px) {
-    .hero-contact {
-        padding: 60px 30px;
-    }
-
-    .hero-contact h1 {
-        font-size: 32px;
-    }
-
-    .contact-section,
-    .faq,
-    .map {
-        padding: 60px 30px;
-    }
-
-    .contact-form-container {
-        padding: 30px 20px;
-    }
-
-    .info-item {
-        flex-direction: column;
-        text-align: center;
-        align-items: center;
-    }
-
-    nav ul {
-        display: none;
-    }
-}
 
 .success-msg { background-color: #d4edda; color: #155724; padding: 10px; text-align: center; margin: 10px auto; max-width: 800px; border-radius: 5px; }
 .error-msg { background-color: #f8d7da; color: #721c24; padding: 10px; text-align: center; margin: 10px auto; max-width: 800px; border-radius: 5px; }

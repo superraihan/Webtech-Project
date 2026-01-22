@@ -238,9 +238,6 @@ th {
 .status-approved { color: #4caf50; font-weight: bold; }
 .status-rejected { color: #f44336; font-weight: bold; }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+
 .btn-adopt.disabled { background-color: #555; cursor: not-allowed; }
 input:disabled { opacity: 0.6; }

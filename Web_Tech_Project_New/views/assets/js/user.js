@@ -1,4 +1,4 @@
-function showSection(sectionId) {
+function showSection(sectionId, element) {
     const sections = document.querySelectorAll('.section-content');
     sections.forEach(section => {
         section.classList.remove('active');
@@ -10,7 +10,7 @@ function showSection(sectionId) {
     });
 
     document.getElementById(sectionId).classList.add('active');
-    event.currentTarget.classList.add('active');
+    element.classList.add('active');
 }
 
 function validateProfile() {

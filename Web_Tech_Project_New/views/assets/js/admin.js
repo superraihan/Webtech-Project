@@ -1,4 +1,4 @@
-function showSection(sectionId) {
+function showSection(sectionId, element) {
     const sections = document.querySelectorAll('.section-content');
     sections.forEach(section => {
         section.classList.remove('active');
@@ -10,7 +10,7 @@ function showSection(sectionId) {
     });
 
     document.getElementById(sectionId).classList.add('active');
-    event.currentTarget.classList.add('active');
+    element.classList.add('active');
 }
 
 var modal = document.getElementById("petModal");
@@ -71,21 +71,17 @@ function closeConfirmModal() {
     if(confirmModal) confirmModal.style.display = "none";
 }
 
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-    if (event.target == confirmModal) {
-        confirmModal.style.display = "none";
-    }
-}
 
-function filterRequests(status) {
+
+function filterRequests(status, btn) {
     const rows = document.querySelectorAll('#adoptions tbody tr');
     const buttons = document.querySelectorAll('.filter-btn');
-    
-    buttons.forEach(btn => btn.classList.remove('active'));
-    event.currentTarget.classList.add('active');
+
+    buttons.forEach(b => {
+        b.classList.remove('active');
+    });
+
+    btn.classList.add('active');
     
     rows.forEach(row => {
         if (status === 'all') {
