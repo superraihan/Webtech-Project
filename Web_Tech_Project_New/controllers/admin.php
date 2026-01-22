@@ -24,6 +24,8 @@ if (!is_dir('uploads')) {
 
 if (isset($_GET['delete_id'])) {
     $id = $_GET['delete_id'];
+    $conn->query("DELETE FROM adoption_request WHERE pet_id=$id");
+    $conn->query("DELETE FROM adoption WHERE pet_id=$id");
     $conn->query("DELETE FROM pets WHERE id=$id");
     $_SESSION['flash_msg'] = "Pet deleted successfully!";
     header("Location: index.php?page=admin");

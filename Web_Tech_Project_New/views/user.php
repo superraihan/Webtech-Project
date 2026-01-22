@@ -15,10 +15,10 @@
     <div class="dashboard-container">
         <div class="sidebar">
             <h3>My Dashboard</h3>
-            <button onclick="showSection('dashboard')" class="nav-btn active"> Dashboard</button>
-            <button onclick="showSection('pets')" class="nav-btn"> Adopt Pets</button>
-            <button onclick="showSection('history')" class="nav-btn"> History</button>
-            <button onclick="showSection('profile')" class="nav-btn"> Profile Settings</button>
+            <button onclick="showSection('dashboard', this)" class="nav-btn active"> Dashboard</button>
+            <button onclick="showSection('pets', this)" class="nav-btn"> Adopt Pets</button>
+            <button onclick="showSection('history', this)" class="nav-btn"> History</button>
+            <button onclick="showSection('profile', this)" class="nav-btn"> Profile Settings</button>
             <a href="index.php?page=logout"><button class="logout-btn"> Logout</button></a>
         </div>
 

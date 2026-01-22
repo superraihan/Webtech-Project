@@ -16,11 +16,11 @@
         <div class="sidebar">
             <h3>Admin Panel</h3>
             <div class="sidebar-nav">
-                <button onclick="showSection('dashboard')" class="nav-btn active">Dashboard</button>
-                <button onclick="showSection('users')" class="nav-btn">Users List</button>
-                <button onclick="showSection('manage_pets')" class="nav-btn">Manage Pets</button>
-                <button onclick="showSection('adoptions')" class="nav-btn">Adoptions</button>
-                <button onclick="showSection('settings')" class="nav-btn">Settings</button>
+                <button onclick="showSection('dashboard', this)" class="nav-btn active">Dashboard</button>
+                <button onclick="showSection('users', this)" class="nav-btn">Users List</button>
+                <button onclick="showSection('manage_pets', this)" class="nav-btn">Manage Pets</button>
+                <button onclick="showSection('adoptions', this)" class="nav-btn">Adoptions</button>
+                <button onclick="showSection('settings', this)" class="nav-btn">Settings</button>
             </div>
             <a href="index.php?page=logout" class="logout-link"><button class="sidebar-logout-btn">Logout</button></a>
         </div>
@@ -149,12 +149,11 @@
                 <h2>Adoption Requests</h2>
 
                 <div class="filter-tabs">
-                    <button class="filter-btn active" onclick="filterRequests('all')">All</button>
-                    <button class="filter-btn" onclick="filterRequests('pending')">Pending</button>
-                    <button class="filter-btn" onclick="filterRequests('approved')">Approved</button>
-                    <button class="filter-btn" onclick="filterRequests('rejected')">Rejected</button>
+                    <button class="filter-btn active" onclick="filterRequests('all', this)">All</button>
+                    <button class="filter-btn" onclick="filterRequests('pending', this)">Pending</button>
+                    <button class="filter-btn" onclick="filterRequests('approved', this)">Approved</button>
+                    <button class="filter-btn" onclick="filterRequests('rejected', this)">Rejected</button>
                 </div>
-
                 <table>
                     <thead>
                         <tr>
@@ -307,7 +306,7 @@
         </div>
     </div>
 
-    <script src="views/assets/js/admin.js?v=8"></script>
+    <script src="views/assets/js/admin.js"></script>
 </body>
 
 </html>

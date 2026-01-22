@@ -106,12 +106,6 @@ function showLoginSuccess(redirectUrl, userName) {
         msg.innerText = 'Welcome ' + userName + ' ';
         popup.style.display = 'flex';
 
-        popup.addEventListener('click', function (e) {
-            if (e.target === popup) {
-                window.location.href = redirectUrl;
-            }
-        });
-        
         let btn = popup.querySelector('.popup-btn');
         if(btn) {
              btn.onclick = function() {
