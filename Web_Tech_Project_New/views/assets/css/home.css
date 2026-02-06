@@ -220,23 +220,14 @@ nav ul a:hover {
 }
 
 .pet-age {
-    color: #bfbfbf;
+    color: var(--text-muted);
     font-size: 14px;
-}
-
-.no-pets {
-    color: #bfbfbf;
-    font-size: 18px;
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 20px;
 }
 
 footer {
     text-align: center;
-    padding: 26px;
-    color: #bfbfbf;
-    background: #000000;
-    border-top: 1px solid #222222;
-    font-size: 14px;
+    padding: 40px;
+    color: var(--text-muted);
+    background: #000;
+    border-top: 1px solid #222;
 }

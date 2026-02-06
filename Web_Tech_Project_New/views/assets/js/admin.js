@@ -16,7 +16,7 @@ function showSection(sectionId, element) {
 var modal = document.getElementById("petModal");
 
 function openModal() {
-    if(modal) {
+    if (modal) {
         modal.style.display = "flex";
         document.getElementById("modalTitle").innerText = "Add New Pet";
         document.getElementById("addBtn").style.display = "block";
@@ -28,11 +28,11 @@ function openModal() {
 }
 
 function closeModal() {
-    if(modal) modal.style.display = "none";
+    if (modal) modal.style.display = "none";
 }
 
 function editPet(pet) {
-    if(modal) {
+    if (modal) {
         modal.style.display = "flex";
         document.getElementById("modalTitle").innerText = "Edit Pet";
         document.getElementById("addBtn").style.display = "none";
@@ -52,23 +52,23 @@ function editPet(pet) {
 var confirmModal = document.getElementById("confirmModal");
 
 function confirmAction(url, message, type) {
-    if(confirmModal) {
+    if (confirmModal) {
         document.getElementById("confirmText").innerText = message;
         var confirmBtn = document.getElementById("confirmBtnLink");
         confirmBtn.href = url;
-        
+
         if (type === 'delete' || type === 'reject') {
             confirmBtn.style.background = "#ef4444";
         } else {
             confirmBtn.style.background = "#22c55e";
         }
-        
+
         confirmModal.style.display = "flex";
     }
 }
 
 function closeConfirmModal() {
-    if(confirmModal) confirmModal.style.display = "none";
+    if (confirmModal) confirmModal.style.display = "none";
 }
 
 
@@ -82,7 +82,7 @@ function filterRequests(status, btn) {
     });
 
     btn.classList.add('active');
-    
+
     rows.forEach(row => {
         if (status === 'all') {
             row.style.display = '';
@@ -107,7 +107,7 @@ function validatePetForm() {
         errorMsg.innerText = "All fields (Name, Type, Age) are required!";
         return false;
     }
-    
+
     if (age < 0) {
         errorMsg.style.display = "block";
         errorMsg.innerText = "Age cannot be negative!";
@@ -137,5 +137,29 @@ function validateAdminForm() {
     }
 
     errorMsg.style.display = "none";
+    errorMsg.style.display = "none";
     return true;
+}
+
+
+var viewModal = document.getElementById("viewPetModal");
+
+function viewPetInfo(pet) {
+    if (viewModal) {
+        viewModal.style.display = "flex";
+
+        let imgPath = pet.image ? "uploads/" + pet.image : "views/assets/images/paw.png";
+        document.getElementById("v_image").src = imgPath;
+
+        document.getElementById("v_name").innerText = pet.name;
+        document.getElementById("v_owner").innerText = pet.owner_name || "Unknown";
+        document.getElementById("v_type").innerText = pet.type;
+        document.getElementById("v_age").innerText = pet.age;
+        document.getElementById("v_status").innerText = pet.status.charAt(0).toUpperCase() + pet.status.slice(1);
+        document.getElementById("v_desc").innerText = pet.description || "No description available.";
+    }
+}
+
+function closeViewModal() {
+    if (viewModal) viewModal.style.display = "none";
 }

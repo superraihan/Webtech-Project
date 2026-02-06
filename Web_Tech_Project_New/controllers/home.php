@@ -2,12 +2,20 @@
 require_once 'models/db_connect.php';
 
 $sql = "SELECT * FROM pets WHERE status = 'available' ORDER BY id DESC LIMIT 8";
-$result = $conn->query($sql);
-$pets = [];
+$stmt = $conn->query($sql);
+$pets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $pets[] = $row;
+// Fetch Stats (MySQLi)
+$stats = [
+    'stats_adopted' => '5,000+',
+    'stats_families' => '1,200+',
+    'stats_shelters' => '50+'
+];
+
+$res = $mysqli->query("SELECT * FROM site_settings");
+if ($res) {
+    while ($row = $res->fetch_assoc()) {
+        $stats[$row['setting_key']] = $row['setting_value'];
     }
 }
 

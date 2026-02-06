@@ -27,15 +27,15 @@
 
     <section class="stats">
         <div>
-            <h2>5,000+</h2>
+            <h2><?php echo $stats['stats_adopted']; ?></h2>
             <p>PETS ADOPTED</p>
         </div>
         <div>
-            <h2>1,200+</h2>
+            <h2><?php echo $stats['stats_families']; ?></h2>
             <p>HAPPY FAMILIES</p>
         </div>
         <div>
-            <h2>50+</h2>
+            <h2><?php echo $stats['stats_shelters']; ?></h2>
             <p>PARTNER SHELTERS</p>
         </div>
     </section>
