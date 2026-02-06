@@ -17,20 +17,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif ($pass != $cpass) {
         $error = "Passwords do not match!";
     } elseif (strlen($phone) != 11) {
-            $error = "Phone number must be 11 digits!";
+        $error = "Phone number must be 11 digits!";
     } else {
-        $check_email = "SELECT * FROM users WHERE email='$email'";
-        $result = $conn->query($check_email);
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email=:email");
+        $stmt->execute(['email' => $email]);
 
-        if ($result->num_rows > 0) {
+        if ($stmt->rowCount() > 0) {
             $error = "Email already exists! Please Login.";
         } else {
-            $sql = "INSERT INTO users (name, email, phone, address, password) VALUES ('$name', '$email', '$phone', '$address', '$pass')";
+            $stmt = $conn->prepare("INSERT INTO users (name, email, phone, address, password) VALUES (:name, :email, :phone, :address, :pass)");
 
-            if ($conn->query($sql) === TRUE) {
+            if ($stmt->execute(['name' => $name, 'email' => $email, 'phone' => $phone, 'address' => $address, 'pass' => $pass])) {
                 $success = "Registration Successful! You can now go to Login page.";
             } else {
-                $error = "Error: " . $conn->error;
+                $error = "Registration failed. Please try again.";
             }
         }
     }

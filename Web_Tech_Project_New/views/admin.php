@@ -4,7 +4,7 @@
 <head>
     <title>Admin Dashboard - PetAdopt</title>
     <link rel="stylesheet" href="views/assets/css/home.css">
-    <link rel="stylesheet" href="views/assets/css/admin.css">
+    <link rel="stylesheet" href="views/assets/css/admin.css?v=<?php echo time(); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -104,6 +104,7 @@
                         <tr>
                             <th>Image</th>
                             <th>Name</th>
+                            <th>Owner</th>
                             <th>Type</th>
                             <th>Age</th>
                             <th>Status</th>
@@ -125,16 +126,25 @@
                                     $statusClass = 'status-unknown';
 
                                 $statusText = !empty($status) ? ucfirst($status) : 'Unknown';
+                                $ownerText = !empty($row['owner_name']) ? htmlspecialchars($row['owner_name']) : 'Admin';
 
                                 echo "<tr>
                                     <td><img src='uploads/" . $row['image'] . "' class='pet-thumb'></td>
                                     <td>" . $row['name'] . "</td>
+                                    <td>" . $ownerText . "</td>
                                     <td>" . $row['type'] . "</td>
                                     <td>" . $row['age'] . " yrs</td>
                                     <td><span class='status-badge " . $statusClass . "'>" . $statusText . "</span></td>
-                                    <td>
-                                        <button class='btn-edit' onclick='editPet(" . json_encode($row) . ")'>Edit</button>
-                                        <button class='btn-delete' onclick=\"confirmAction('index.php?page=admin&delete_id=" . $row['id'] . "', 'Are you sure you want to delete this pet?', 'delete')\">Delete</button>                                    </td>
+                                    <td>";
+
+                                if (empty($row['owner_name'])) {
+                                    echo "<button class='btn-edit' onclick='editPet(" . json_encode($row) . ")'>Edit</button>
+                                          <button class='btn-delete' onclick=\"confirmAction('index.php?page=admin&delete_id=" . $row['id'] . "', 'Are you sure you want to delete this pet?', 'delete')\">Delete</button>";
+                                } else {
+                                    echo "<button class='btn-view' onclick='viewPetInfo(" . json_encode($row) . ")' style='background: #17a2b8; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer;'>Read Info</button>";
+                                }
+
+                                echo "</td>
                                 </tr>";
                             }
                         } else {
@@ -185,11 +195,12 @@
                                     <td><span class='status-badge " . $statusClass . "'>" . ucfirst($row['status']) . "</span></td>
                                     <td>";
 
-                                if ($row['status'] == 'pending') {  
+                                if ($row['status'] == 'pending') {
                                     echo "<button onclick=\"confirmAction('index.php?page=admin&approve_request=" . $row['id'] . "', 'Do you want to Approve this request?', 'approve')\" class='btn-approve'>Approve</button> ";
-                                    echo "<button onclick=\"confirmAction('index.php?page=admin&reject_request=" . $row['id'] . "', 'Do you want to Reject this request?', 'reject')\" class='btn-reject'>Reject</button>"; 
+                                    echo "<button onclick=\"confirmAction('index.php?page=admin&reject_request=" . $row['id'] . "', 'Do you want to Reject this request?', 'reject')\" class='btn-reject'>Reject</button>";
                                 } else {
-                                    echo "<button onclick=\"confirmAction('index.php?page=admin&delete_request=" . $row['id'] . "', 'Delete this request record?', 'delete')\" class='btn-delete-small'>Delete</button>";                                }
+                                    echo "<button onclick=\"confirmAction('index.php?page=admin&delete_request=" . $row['id'] . "', 'Delete this request record?', 'delete')\" class='btn-delete-small'>Delete</button>";
+                                }
 
                                 echo "</td>
                                 </tr>";
@@ -219,6 +230,28 @@
                                     required>
                             </div>
                             <button type="submit" name="update_admin" class="btn-update">Update Profile</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-box">
+                        <h3>Update Homepage Stats</h3>
+                        <form action="" method="POST">
+                            <div class="form-group">
+                                <label>Pets Adopted</label>
+                                <input type="text" name="stats_adopted"
+                                    value="<?php echo $settings['stats_adopted'] ?? '5,000+'; ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Happy Families</label>
+                                <input type="text" name="stats_families"
+                                    value="<?php echo $settings['stats_families'] ?? '1,200+'; ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Partner Shelters</label>
+                                <input type="text" name="stats_shelters"
+                                    value="<?php echo $settings['stats_shelters'] ?? '50+'; ?>" required>
+                            </div>
+                            <button type="submit" name="update_stats" class="btn-update">Update Stats</button>
                         </form>
                     </div>
 
@@ -303,6 +336,24 @@
                 <a id="confirmBtnLink" href="#" class="btn-confirm-yes">Yes, I'm Sure</a>
                 <button onclick="closeConfirmModal()" class="btn-confirm-cancel">Cancel</button>
             </div>
+        </div>
+    </div>
+
+    <div id="viewPetModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <span class="close" onclick="closeViewModal()">&times;</span>
+            <h3>Pet Details</h3>
+            <img id="v_image" src=""
+                style="width: 150px; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 15px;">
+            <h4 id="v_name" style="margin: 5px 0; color: #333;"></h4>
+            <div style="text-align: left; background: #f9f9f9; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                <p><strong>Owner:</strong> <span id="v_owner"></span></p>
+                <p><strong>Type:</strong> <span id="v_type"></span></p>
+                <p><strong>Age:</strong> <span id="v_age"></span> years</p>
+                <p><strong>Status:</strong> <span id="v_status"></span></p>
+                <p><strong>Description:</strong> <br><span id="v_desc" style="color: #666;"></span></p>
+            </div>
+            <button onclick="closeViewModal()" class="btn-update" style="margin-top: 20px;">Close</button>
         </div>
     </div>
 

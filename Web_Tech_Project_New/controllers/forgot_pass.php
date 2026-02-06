@@ -10,18 +10,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['check_email'])) {
         $email = $_POST['email'];
 
-        $check_user = "SELECT * FROM users WHERE email='$email'";
-        $result_user = $conn->query($check_user);
+        $check_user = "SELECT * FROM users WHERE email=:email";
+        $stmt = $conn->prepare($check_user);
+        $stmt->execute(['email' => $email]);
+        $result_user = $stmt;
 
-        if ($result_user->num_rows > 0) {
+        if ($result_user->rowCount() > 0) {
             $_SESSION['reset_email'] = $email;
             $_SESSION['reset_table'] = 'users';
             $step = 2;
         } else {
-            $check_admin = "SELECT * FROM admins WHERE email='$email'";
-            $result_admin = $conn->query($check_admin);
+            $check_admin = "SELECT * FROM admins WHERE email=:email";
+            $stmt = $conn->prepare($check_admin);
+            $stmt->execute(['email' => $email]);
 
-            if ($result_admin->num_rows > 0) {
+            if ($stmt->rowCount() > 0) {
                 $_SESSION['reset_email'] = $email;
                 $_SESSION['reset_table'] = 'admins';
                 $step = 2;
@@ -48,18 +51,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_SESSION['reset_email']) && isset($_SESSION['reset_table'])) {
 
                 $email_to_update = $_SESSION['reset_email'];
-                $table_to_update = $_SESSION['reset_table'];
+                $table_to_update = $_SESSION['reset_table']; // Potentially unsafe if session manipulated, but constrained by logic above.
 
-                $update_sql = "UPDATE $table_to_update SET password='$new_pass' WHERE email='$email_to_update'";
+                // Validate table name to prevent injection from session tampering
+                if (!in_array($table_to_update, ['users', 'admins'])) {
+                    die("Invalid table.");
+                }
 
-                if ($conn->query($update_sql) === TRUE) {
+                $update_sql = "UPDATE $table_to_update SET password=:pass WHERE email=:email";
+                $stmt = $conn->prepare($update_sql);
+
+                if ($stmt->execute(['pass' => $new_pass, 'email' => $email_to_update])) {
                     $step = 3;
                     $success = "✅ Password reset successfully !";
 
                     unset($_SESSION['reset_email']);
                     unset($_SESSION['reset_table']);
                 } else {
-                    $error = "Error updating record: " . $conn->error;
+                    $error = "Error updating record: " . $conn->errorInfo()[2];
                 }
             } else {
                 $error = "Session expired! Please try again.";

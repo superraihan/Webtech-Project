@@ -25,14 +25,17 @@
     </section>
 
     <section class="filter-section">
+
         <div class="categories">
-            <a href="index.php?page=pets" class="<?php echo ($filter_type == '') ? 'active' : ''; ?>">All</a>
+            <a href="index.php?page=pets" class="category-link <?php echo ($filter_type == '') ? 'active' : ''; ?>"
+                data-type="">All</a>
             <a href="index.php?page=pets&type=Cat"
-                class="<?php echo ($filter_type == 'Cat') ? 'active' : ''; ?>">Cats</a>
+                class="category-link <?php echo ($filter_type == 'Cat') ? 'active' : ''; ?>" data-type="Cat">Cats</a>
             <a href="index.php?page=pets&type=Dog"
-                class="<?php echo ($filter_type == 'Dog') ? 'active' : ''; ?>">Dogs</a>
+                class="category-link <?php echo ($filter_type == 'Dog') ? 'active' : ''; ?>" data-type="Dog">Dogs</a>
             <a href="index.php?page=pets&type=Rabbit"
-                class="<?php echo ($filter_type == 'Rabbit') ? 'active' : ''; ?>">Rabbits</a>
+                class="category-link <?php echo ($filter_type == 'Rabbit') ? 'active' : ''; ?>"
+                data-type="Rabbit">Rabbits</a>
         </div>
     </section>
 
@@ -60,16 +63,17 @@
                             </p>
 
                             <?php if (isset($_SESSION['user_id']) && (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin')): ?>
-                                <form method="POST" class="adopt-form">
-                                                <input type="hidden" name="pet_id" value="<?php echo $row['id']; ?>">
-                                                <button type="submit" name="request_adoption" class="adopt-btn">Request Adoption</button>
-                                            </form>
-                                    <?php elseif (!isset($_SESSION['email'])): ?>
-                                            <a href="index.php?page=login"><button class="adopt-btn">Login to Adopt</button></a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                            <?php
+                                <form method="POST" class="adopt-form" onsubmit="return requestAdoption(event, this)">
+                                    <input type="hidden" name="pet_id" value="<?php echo $row['id']; ?>">
+                                    <input type="hidden" name="request_adoption" value="1">
+                                    <button type="submit" class="adopt-btn">Request Adoption</button>
+                                </form>
+                            <?php elseif (!isset($_SESSION['email'])): ?>
+                                <a href="index.php?page=login"><button class="adopt-btn">Login to Adopt</button></a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php
                 }
             } else {
                 echo "<p class='no-pets'>No pets found in this category.</p>";

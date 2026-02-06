@@ -23,32 +23,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($email) || empty($password)) {
         $login_error = "Please fill all fields!";
     } else {
-        $sql_user = "SELECT * FROM users WHERE email='$email' AND password='$password'";
-        $result_user = $conn->query($sql_user);
+        // Check Users Table
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email=:email");
+        $stmt->execute(['email' => $email]);
+        $user = $stmt->fetch();
 
-        if ($result_user->num_rows == 1) {
-            $row = $result_user->fetch_assoc();
-            $_SESSION['user_id'] = $row['id'];
-            $_SESSION['user_name'] = $row['name'];
-            $_SESSION['email'] = $row['email'];
+        if ($user && $user['password'] === $password) { // Ideally verify_password() here
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = $user['name'];
+            $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = 'user';
 
-            $user_name = $row['name'];
+            $user_name = $user['name'];
             $redirect_url = "index.php?page=user";
             $login_success = true;
 
         } else {
-            $sql_admin = "SELECT * FROM admins WHERE email='$email' AND password='$password'";
-            $result_admin = $conn->query($sql_admin);
+            // Check Admins Table
+            $stmt = $conn->prepare("SELECT * FROM admins WHERE email=:email");
+            $stmt->execute(['email' => $email]);
+            $admin = $stmt->fetch();
 
-            if ($result_admin->num_rows == 1) {
-                $row = $result_admin->fetch_assoc();
-                $_SESSION['admin_id'] = $row['id'];
-                $_SESSION['admin_name'] = $row['name'];
-                $_SESSION['email'] = $row['email'];
+            if ($admin && $admin['password'] === $password) {
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['admin_name'] = $admin['name'];
+                $_SESSION['email'] = $admin['email'];
                 $_SESSION['role'] = 'admin';
 
-                $user_name = $row['name'] . " (Admin)";
+                $user_name = $admin['name'] . " (Admin)";
                 $redirect_url = "index.php?page=admin";
                 $login_success = true;
             } else {
