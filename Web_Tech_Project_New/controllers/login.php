@@ -5,7 +5,8 @@ require_once 'models/db_connect.php';
 if (isset($_SESSION['role'])) {
     if ($_SESSION['role'] == 'admin') {
         header("Location: index.php?page=admin");
-    } else {
+    }
+    else {
         header("Location: index.php?page=user");
     }
     exit();
@@ -22,13 +23,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($email) || empty($password)) {
         $login_error = "Please fill all fields!";
-    } else {
+    }
+    else {
         // Check Users Table
         $stmt = $conn->prepare("SELECT * FROM users WHERE email=:email");
         $stmt->execute(['email' => $email]);
         $user = $stmt->fetch();
 
-        if ($user && $user['password'] === $password) { // Ideally verify_password() here
+        if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['email'] = $user['email'];
@@ -38,13 +40,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $redirect_url = "index.php?page=user";
             $login_success = true;
 
-        } else {
+        }
+        else {
             // Check Admins Table
             $stmt = $conn->prepare("SELECT * FROM admins WHERE email=:email");
             $stmt->execute(['email' => $email]);
             $admin = $stmt->fetch();
 
-            if ($admin && $admin['password'] === $password) {
+            if ($admin && password_verify($password, $admin['password'])) {
                 $_SESSION['admin_id'] = $admin['id'];
                 $_SESSION['admin_name'] = $admin['name'];
                 $_SESSION['email'] = $admin['email'];
@@ -53,7 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $user_name = $admin['name'] . " (Admin)";
                 $redirect_url = "index.php?page=admin";
                 $login_success = true;
-            } else {
+            }
+            else {
                 $login_error = "Invalid Email or Password!";
             }
         }

@@ -829,6 +829,40 @@ tr:hover {
     transition: all 0.3s ease;
 }
 
+.btn-adopt {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #f97316 0%, #e65100 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+}
+
+.btn-adopt:hover:not(:disabled) {
+    background: linear-gradient(135deg, #e65100 0%, #d84315 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(249, 115, 22, 0.5);
+}
+
+.btn-adopt:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-adopt.disabled {
+    background: #444;
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
 .pet-edit-btn {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;

@@ -38,7 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $msg = "Adoption request sent successfully!";
                 header("Refresh:1");
 
-            } else {
+            }
+            else {
                 $error = "Error: " . $conn->errorInfo()[2];
             }
         }
@@ -53,7 +54,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (empty($name) || empty($type) || $age < 0) {
             $error = "Please fill all fields correctly.";
-        } else {
+        }
+        else {
             $image = $_FILES['image']['name'];
             $target = "uploads/" . basename($image);
             if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
@@ -62,10 +64,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($stmt->execute(['name' => $name, 'type' => $type, 'age' => $age, 'desc' => $desc, 'image' => $image, 'status' => $status, 'owner_id' => $user_id])) {
                     $msg = "Pet submitted successfully!";
                     header("Refresh:1");
-                } else {
+                }
+                else {
                     $error = "Error submitting pet: " . $conn->errorInfo()[2];
                 }
-            } else {
+            }
+            else {
                 $error = "Failed to upload image.";
             }
         }
@@ -82,7 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $conn->prepare("DELETE FROM pets WHERE id=:id")->execute(['id' => $del_id]);
             $msg = "Pet deleted successfully.";
             header("Refresh:1; url=index.php?page=user");
-        } else {
+        }
+        else {
             $error = "Unauthorized action.";
         }
     }
@@ -107,13 +112,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 move_uploaded_file($_FILES['image']['tmp_name'], $target);
                 $sql = "UPDATE pets SET name=:name, type=:type, age=:age, description=:desc, image=:img WHERE id=:id";
                 $conn->prepare($sql)->execute(['name' => $name, 'type' => $type, 'age' => $age, 'desc' => $desc, 'img' => $image, 'id' => $id]);
-            } else {
+            }
+            else {
                 $sql = "UPDATE pets SET name=:name, type=:type, age=:age, description=:desc WHERE id=:id";
                 $conn->prepare($sql)->execute(['name' => $name, 'type' => $type, 'age' => $age, 'desc' => $desc, 'id' => $id]);
             }
             $msg = "Pet updated successfully!";
             header("Refresh:1");
-        } else {
+        }
+        else {
             $error = "Unauthorized action.";
         }
     }
@@ -126,17 +133,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (empty($name) || empty($phone) || empty($address) || empty($password)) {
             $error = "All fields are required!";
-        } elseif (strlen($phone) != 11) {
+        }
+        elseif (strlen($phone) != 11) {
             $error = "Phone number must be 11 digits!";
-        } else {
+        }
+        else {
+            $hashed_pass = password_hash($password, PASSWORD_DEFAULT);
             $update_sql = "UPDATE users SET name=:name, phone=:phone, address=:address, password=:password WHERE email=:email";
             $stmt = $conn->prepare($update_sql);
 
-            if ($stmt->execute(['name' => $name, 'phone' => $phone, 'address' => $address, 'password' => $password, 'email' => $email])) {
+            if ($stmt->execute(['name' => $name, 'phone' => $phone, 'address' => $address, 'password' => $hashed_pass, 'email' => $email])) {
                 $msg = "Profile updated successfully!";
                 $_SESSION['user_name'] = $name;
                 header("Refresh:1");
-            } else {
+            }
+            else {
                 $error = "Error updating: " . $conn->errorInfo()[2];
             }
         }

@@ -80,7 +80,8 @@ body {
     background: #222;
 }
 
-.categories a:hover, .categories a.active {
+.categories a:hover,
+.categories a.active {
     background: #ff8c00;
     color: #000;
     font-weight: bold;
@@ -196,4 +197,7 @@ body {
     border: 1px solid #ef4444;
     color: #ef4444;
 }
-.adopt-form { margin-top: 10px; }
+
+.adopt-form {
+    margin-top: 10px;
+}

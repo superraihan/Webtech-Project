@@ -48,15 +48,16 @@ if (isset($_GET['delete_user_id'])) {
     exit();
 }
 
-// Handle Stats Update (MySQLi)
+// Handle Stats Update (PDO)
 if (isset($_POST['update_stats'])) {
-    $adopted = $mysqli->real_escape_string($_POST['stats_adopted']);
-    $families = $mysqli->real_escape_string($_POST['stats_families']);
-    $shelters = $mysqli->real_escape_string($_POST['stats_shelters']);
+    $adopted = $_POST['stats_adopted'];
+    $families = $_POST['stats_families'];
+    $shelters = $_POST['stats_shelters'];
 
-    $mysqli->query("UPDATE site_settings SET setting_value='$adopted' WHERE setting_key='stats_adopted'");
-    $mysqli->query("UPDATE site_settings SET setting_value='$families' WHERE setting_key='stats_families'");
-    $mysqli->query("UPDATE site_settings SET setting_value='$shelters' WHERE setting_key='stats_shelters'");
+    $stmt = $conn->prepare("UPDATE site_settings SET setting_value=:val WHERE setting_key=:key");
+    $stmt->execute(['val' => $adopted, 'key' => 'stats_adopted']);
+    $stmt->execute(['val' => $families, 'key' => 'stats_families']);
+    $stmt->execute(['val' => $shelters, 'key' => 'stats_shelters']);
 
     $_SESSION['flash_msg'] = "Stats updated successfully!";
     header("Location: index.php?page=admin");
@@ -127,7 +128,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (empty($name) || empty($type) || $age < 0) {
             $error = "Please fill all fields correctly.";
-        } else {
+        }
+        else {
             $image = $_FILES['image']['name'];
             $target = "uploads/" . basename($image);
             move_uploaded_file($_FILES['image']['tmp_name'], $target);
@@ -138,7 +140,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['flash_msg'] = "Pet added successfully!";
                 header("Location: index.php?page=admin");
                 exit();
-            } else {
+            }
+            else {
                 $error = "Error adding pet: " . $conn->errorInfo()[2];
             }
         }
@@ -154,7 +157,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($pet && $pet['owner_id']) {
             $error = "Error: Cannot edit user-listed pets.";
-        } else {
+        }
+        else {
             $name = $_POST['name'];
             $type = $_POST['type'];
             $age = $_POST['age'];
@@ -167,7 +171,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 move_uploaded_file($_FILES['image']['tmp_name'], $target);
                 $sql = "UPDATE pets SET name=:name, type=:type, age=:age, description=:desc, image=:image, status=:status WHERE id=:id";
                 $params = ['name' => $name, 'type' => $type, 'age' => $age, 'desc' => $desc, 'image' => $image, 'status' => $status, 'id' => $id];
-            } else {
+            }
+            else {
                 $sql = "UPDATE pets SET name=:name, type=:type, age=:age, description=:desc, status=:status WHERE id=:id";
                 $params = ['name' => $name, 'type' => $type, 'age' => $age, 'desc' => $desc, 'status' => $status, 'id' => $id];
             }
@@ -177,7 +182,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['flash_msg'] = "Pet updated successfully!";
                 header("Location: index.php?page=admin");
                 exit();
-            } else {
+            }
+            else {
                 $error = "Error updating pet: " . $conn->errorInfo()[2];
             }
         }
@@ -190,14 +196,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (empty($new_name) || empty($new_password)) {
             $error = "Name and Password cannot be empty.";
-        } else {
+        }
+        else {
+            $hashed_pass = password_hash($new_password, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("UPDATE admins SET name=:name, password=:pass WHERE email=:email");
-            if ($stmt->execute(['name' => $new_name, 'pass' => $new_password, 'email' => $admin_email])) {
+            if ($stmt->execute(['name' => $new_name, 'pass' => $hashed_pass, 'email' => $admin_email])) {
                 $_SESSION['admin_name'] = $new_name;
                 $_SESSION['flash_msg'] = "Profile updated!";
                 header("Location: index.php?page=admin");
                 exit();
-            } else {
+            }
+            else {
                 $error = "Error updating profile.";
             }
         }
@@ -210,20 +219,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (empty($new_admin_name) || empty($new_admin_email) || empty($new_admin_password)) {
             $error = "All fields are required.";
-        } else {
+        }
+        else {
             $stmt = $conn->prepare("SELECT * FROM admins WHERE email=:email");
             $stmt->execute(['email' => $new_admin_email]);
             if ($stmt->rowCount() == 0) {
+                $hashed_pass = password_hash($new_admin_password, PASSWORD_DEFAULT);
                 $sql = "INSERT INTO admins (name, email, password) VALUES (:name, :email, :pass)";
                 $stmt = $conn->prepare($sql);
-                if ($stmt->execute(['name' => $new_admin_name, 'email' => $new_admin_email, 'pass' => $new_admin_password])) {
+                if ($stmt->execute(['name' => $new_admin_name, 'email' => $new_admin_email, 'pass' => $hashed_pass])) {
                     $_SESSION['flash_msg'] = "New Admin Added!";
                     header("Location: index.php?page=admin");
                     exit();
-                } else {
+                }
+                else {
                     $error = "Error adding admin.";
                 }
-            } else {
+            }
+            else {
                 $error = "Email already exists.";
             }
         }
@@ -254,8 +267,8 @@ $stmt->execute(['email' => $admin_email]);
 $admin_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $settings = [];
-$res = $mysqli->query("SELECT * FROM site_settings");
-while ($row = $res->fetch_assoc()) {
+$res = $conn->query("SELECT * FROM site_settings");
+while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
     $settings[$row['setting_key']] = $row['setting_value'];
 }
 

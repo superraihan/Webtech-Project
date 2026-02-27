@@ -7,7 +7,7 @@ $sql = "CREATE TABLE IF NOT EXISTS site_settings (
     setting_value TEXT
 )";
 
-if ($mysqli->query($sql) === TRUE) {
+if ($conn->query($sql)) {
     echo "Table 'site_settings' checked/created successfully.<br>";
 
     // Default Values
@@ -18,19 +18,24 @@ if ($mysqli->query($sql) === TRUE) {
     ];
 
     foreach ($defaults as $key => $val) {
-        $check = $mysqli->query("SELECT * FROM site_settings WHERE setting_key='$key'");
-        if ($check->num_rows == 0) {
-            $insert_sql = "INSERT INTO site_settings (setting_key, setting_value) VALUES ('$key', '$val')";
-            if ($mysqli->query($insert_sql) === TRUE) {
+        $check = $conn->prepare("SELECT * FROM site_settings WHERE setting_key=:key");
+        $check->execute(['key' => $key]);
+        if ($check->rowCount() == 0) {
+            $insert_sql = "INSERT INTO site_settings (setting_key, setting_value) VALUES (:key, :val)";
+            $stmt = $conn->prepare($insert_sql);
+            if ($stmt->execute(['key' => $key, 'val' => $val])) {
                 echo "Inserted default for $key.<br>";
-            } else {
-                echo "Error inserting $key: " . $mysqli->error . "<br>";
             }
-        } else {
+            else {
+                echo "Error inserting $key: " . $conn->errorInfo()[2] . "<br>";
+            }
+        }
+        else {
             echo "Setting $key already exists.<br>";
         }
     }
-} else {
-    echo "Error creating table: " . $mysqli->error;
+}
+else {
+    echo "Error creating table: " . $conn->errorInfo()[2];
 }
 ?>
